@@ -152,32 +152,40 @@ export const AdvancedFilterPanel: React.FC<AdvancedFilterPanelProps> = ({
     [hadithData]
   );
 
-  // Memoized active filter count: data sources contribute 0 when none or all 3 selected, else # selected
+  // Memoized active filter count: multi-select sections add their selected-item count; ranges add 1 when active
   const activeFilterCount = useMemo(() => {
     let count = 0;
-    if (filters.types.length !== 0) count++;
-    if (filters.categories.length > 0) count++;
-    if (filters.searchFields.length > 0) count++;
-    if (filters.fulfillmentStatus.length > 0) count++;
-    if (filters.prophecyCategories.length > 0) count++;
-    // Data sources: 0 when none or all 3 selected; 1 when 1 selected, 2 when 2 selected
-    if (filters.dataSources.length > 0 && filters.dataSources.length < 4) 
-      count += filters.dataSources.length;
+    // Islamic Data Filters: count each selected type
+    count += filters.types.length;
+    // Islamic Data Filters: count each selected category
+    count += filters.categories.length;
+    // Search Fields: count each selected field
+    count += filters.searchFields.length;
+    // Islamic Data Filters: fulfillment status and prophecy category
+    count += filters.fulfillmentStatus.length;
+    count += filters.prophecyCategories.length;
+    // Data sources: 0 when none or all 3 selected; else # selected
+   
+    // Year range: 1 when narrowed from default
     if (filters.yearRange.min > 0 || filters.yearRange.max < 2024) count++;
-    if (filters.quranSurahs.length > 0) count++;
+    // Filter by Surah: count each selected surah
+    count += filters.quranSurahs.length;
+    // Quran verse range: 1 when narrowed from full
     if (
       filters.quranVerseRange.min > quranMinVerse ||
       filters.quranVerseRange.max < quranMaxVerse
     )
       count++;
-    if (filters.quranPlaceOfRevelation.length > 0) count++;
-    // Hadith range: only active when narrowed from full data range (avoids counting default 13143 when data has more)
+    // Quran place of revelation: count each selected
+    count += filters.quranPlaceOfRevelation.length;
+    // Hadith number range: 1 when narrowed from full data range
     if (
       filters.hadithNumberRange.min > hadithMinNumber ||
       filters.hadithNumberRange.max < hadithMaxNumber
     )
       count++;
-    if (filters.hadithCategories.length > 0) count++;
+    // Hadith Filters: count each selected category
+    count += filters.hadithCategories.length;
     return count;
   }, [filters, quranMinVerse, quranMaxVerse, hadithMinNumber, hadithMaxNumber]);
 
