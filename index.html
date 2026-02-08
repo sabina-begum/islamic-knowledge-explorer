@@ -174,7 +174,23 @@
     </title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Inline loading state: prevents flash of empty/favicon before React mounts (replaced on hydration) -->
+      <div
+        id="app-loading"
+        style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fafaf9"
+        aria-hidden="true"
+      >
+        <div
+          style="width:48px;height:48px;border:3px solid #e7e5e4;border-top-color:#16a34a;border-radius:50%;animation:app-load-spin 0.8s linear infinite"
+        ></div>
+        <style>
+          @keyframes app-load-spin {
+            to { transform: rotate(360deg); }
+          }
+        </style>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

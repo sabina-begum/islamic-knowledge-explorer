@@ -38,10 +38,14 @@ const InstallAppPage = lazy(() =>
   import("./pages/InstallApp").then((module) => ({ default: module.default }))
 );
 
-// Loading component for lazy-loaded routes
+// Loading component for lazy-loaded routes (full-page, matches index.html placeholder to avoid icon flash on hard refresh)
 const PageLoader: React.FC = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+  <div
+    className="flex items-center justify-center min-h-screen bg-stone-50 dark:bg-stone-900"
+    role="status"
+    aria-label="Loading"
+  >
+    <div className="animate-spin rounded-full h-12 w-12 border-2 border-stone-200 dark:border-stone-700 border-t-green-600" />
   </div>
 );
 

@@ -31,11 +31,12 @@ export function Logo({ className = "", showText = true }: LogoProps) {
           <div className="absolute inset-1 border border-yellow-300/40 rounded-full"></div>
           <div className="absolute inset-2 border border-yellow-200/30 rounded-full"></div>
 
-          {/* Book image */}
+          {/* Book image: async decode to avoid icon flash on hard refresh */}
           <img
             src={bookImage}
             alt="Quran Book"
             className="w-8 h-8 object-contain z-10 relative"
+            decoding="async"
           />
         </div>
       </div>
