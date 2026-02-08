@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { DarkModeProvider } from "./contexts/DarkModeContext";
 import { AccessibilityProvider } from "./contexts/AccessibilityContext";
 import { FirebaseProvider } from "./contexts/FirebaseContext";
+import { useAppReady, AppReadyGate } from "./contexts/AppReadyContext";
 import Navbar from "./components/layout/Navbar";
 import Sidebar from "./components/layout/Sidebar";
 import Footer from "./components/layout/Footer";
@@ -38,10 +39,38 @@ const InstallAppPage = lazy(() =>
   import("./pages/InstallApp").then((module) => ({ default: module.default }))
 );
 
-// Loading component for lazy-loaded routes (full-page, matches index.html placeholder to avoid icon flash on hard refresh)
+// Full-page loader: matches index.html placeholder exactly (parent provides background)
+const FullPageLoader: React.FC = () => (
+  <div
+    style={{
+      width: "100%",
+      height: "100%",
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }}
+    role="status"
+    aria-label="Loading"
+  >
+    <div
+      style={{
+        width: 48,
+        height: 48,
+        border: "3px solid #e7e5e4",
+        borderTopColor: "#16a34a",
+        borderRadius: "50%",
+        boxSizing: "border-box",
+      }}
+      className="animate-spin dark:!border-stone-700 dark:!border-t-green-500"
+    />
+  </div>
+);
+
+// In-main loader for subsequent route changes (when shell is already visible)
 const PageLoader: React.FC = () => (
   <div
-    className="flex items-center justify-center min-h-screen bg-stone-50 dark:bg-stone-900"
+    className="flex items-center justify-center min-h-[60vh] bg-stone-50 dark:bg-stone-900"
     role="status"
     aria-label="Loading"
   >
@@ -147,18 +176,34 @@ function App() {
     };
   }, []);
 
+  const { appReady } = useAppReady() ?? { appReady: false };
+
   return (
     <FirebaseProvider>
       <DarkModeProvider>
         <AccessibilityProvider>
-          <div className="min-h-screen bg-stone-50 dark:bg-stone-900 flex flex-col main-container">
-            {/* Pass sidebar toggle function to Navbar */}
+          {/* Overlay: same full-page loader as index.html until first route has loaded (layout still mounts underneath so lazy route loads) */}
+          {!appReady && (
+            <div
+              style={{
+                position: "fixed",
+                inset: 0,
+                zIndex: 9999,
+                background: "#fafaf9",
+              }}
+              className="dark:!bg-stone-900"
+              aria-hidden="true"
+            >
+              <FullPageLoader />
+            </div>
+          )}
+          {/* Shell always mounted so Routes run and lazy route can load; hidden until appReady to avoid layout jump */}
+          <div
+            className="min-h-screen bg-stone-50 dark:bg-stone-900 flex flex-col main-container"
+            style={{ visibility: appReady ? "visible" : "hidden" }}
+          >
             <Navbar onMenuToggle={toggleSidebar} />
-
-            {/* Sidebar component */}
             <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
-
-            {/* Main content with sidebar-aware layout */}
             <main
               className={`flex-1 container mx-auto max-w-7xl px-4 py-8 content-container transition-all duration-300 ${
                 isSidebarOpen ? "md:mr-80" : ""
@@ -166,14 +211,14 @@ function App() {
             >
               <Suspense fallback={<PageLoader />}>
                 <Routes>
-                  <Route path="/" element={<HomePageWrapper />} />
-                  <Route path="/favorites" element={<FavoritesPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/install" element={<InstallAppPage />} />
-                  <Route path="/copyright" element={<CopyrightPage />} />
-                  <Route path="/terms" element={<TermsPage />} />
-                  <Route path="/privacy" element={<PrivacyPage />} />
+                  <Route path="/" element={<AppReadyGate><HomePageWrapper /></AppReadyGate>} />
+                  <Route path="/favorites" element={<AppReadyGate><FavoritesPage /></AppReadyGate>} />
+                  <Route path="/profile" element={<AppReadyGate><ProfilePage /></AppReadyGate>} />
+                  <Route path="/login" element={<AppReadyGate><LoginPage /></AppReadyGate>} />
+                  <Route path="/install" element={<AppReadyGate><InstallAppPage /></AppReadyGate>} />
+                  <Route path="/copyright" element={<AppReadyGate><CopyrightPage /></AppReadyGate>} />
+                  <Route path="/terms" element={<AppReadyGate><TermsPage /></AppReadyGate>} />
+                  <Route path="/privacy" element={<AppReadyGate><PrivacyPage /></AppReadyGate>} />
                 </Routes>
               </Suspense>
             </main>

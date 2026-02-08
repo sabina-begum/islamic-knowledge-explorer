@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { AppReadyProvider } from "./contexts/AppReadyContext";
 import App from "./App.tsx";
 import "./index.css";
 
@@ -73,7 +74,9 @@ ReactDOM.createRoot(rootElement).render(
     <BrowserRouter>
       <LanguageProvider>
         <AuthProvider>
-          <App />
+          <AppReadyProvider>
+            <App />
+          </AppReadyProvider>
         </AuthProvider>
       </LanguageProvider>
     </BrowserRouter>
