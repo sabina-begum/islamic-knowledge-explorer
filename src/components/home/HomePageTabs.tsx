@@ -81,46 +81,26 @@ export const HomePageTabs: React.FC<HomePageTabsProps> = ({
 
   return (
     <div className="border-b border-neutral-200 dark:border-stone-700 bg-stone-200 dark:bg-stone-700 rounded-t-md">
-      {/* Mobile & Tablet: Scrollable horizontal tabs */}
-      <div className="lg:hidden overflow-x-auto scrollbar-hide">
-        <div className="flex gap-2 p-3 min-w-max">
+      {/* Single responsive row: scrollable on small screens, centered on desktop */}
+      <div className="overflow-x-auto scrollbar-hide">
+        <div className="flex gap-2 p-3 lg:p-4 min-w-max justify-center lg:justify-start">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => handleTabClick(tab.id)}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-300 whitespace-nowrap ${
+              className={`px-3 py-2 lg:px-4 lg:py-3 rounded-lg lg:rounded-xl text-xs lg:text-sm font-semibold transition-all duration-300 whitespace-nowrap ${
                 activeTab === tab.id
                   ? "bg-green-600 text-white shadow-lg shadow-green-600/25 border-2 border-green-500"
                   : "text-stone-700 dark:text-stone-300 hover:text-stone-800 dark:hover:text-stone-100 bg-stone-50 dark:bg-stone-800 border-2 border-transparent hover:border-stone-300 dark:hover:border-stone-600"
               }`}
             >
-              <span className="inline-flex items-center gap-1">
+              <span className="inline-flex items-center gap-1 lg:gap-2">
                 {icons[tab.icon as keyof typeof icons]}
                 {tab.label}
               </span>
             </button>
           ))}
         </div>
-      </div>
-
-      {/* Desktop: Wrapped tabs */}
-      <div className="hidden lg:flex flex-wrap gap-2 p-4 lg:p-6 justify-center lg:justify-start">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => handleTabClick(tab.id)}
-            className={`px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
-              activeTab === tab.id
-                ? "bg-green-600 text-white shadow-lg shadow-green-600/25 border-2 border-green-500"
-                : "text-stone-700 dark:text-stone-300 hover:text-stone-800 dark:hover:text-stone-100 bg-stone-50 dark:bg-stone-800 border-2 border-transparent hover:border-stone-300 dark:hover:border-stone-600"
-            }`}
-          >
-            <span className="inline-flex items-center gap-2">
-              {icons[tab.icon as keyof typeof icons]}
-              {tab.label}
-            </span>
-          </button>
-        ))}
       </div>
     </div>
   );

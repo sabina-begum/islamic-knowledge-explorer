@@ -1,3 +1,7 @@
+/**
+ * Chart theme using hex colors only, so Nivo/d3-color parsing is stable
+ * after dependency updates (e.g. d3-color 3.1.x).
+ */
 export const getChartTheme = (isDarkMode: boolean) => ({
   axis: {
     ticks: {
@@ -9,6 +13,16 @@ export const getChartTheme = (isDarkMode: boolean) => ({
       text: {
         fill: isDarkMode ? "#f0f0f0" : "#333333",
       },
+    },
+    domain: {
+      line: {
+        stroke: isDarkMode ? "#525252" : "#a3a3a3",
+      },
+    },
+  },
+  grid: {
+    line: {
+      stroke: isDarkMode ? "#525252" : "#e5e5e5",
     },
   },
   legends: {
