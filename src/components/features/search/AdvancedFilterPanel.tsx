@@ -152,18 +152,18 @@ export const AdvancedFilterPanel: React.FC<AdvancedFilterPanelProps> = ({
     [hadithData]
   );
 
-  // Memoized active filter count to prevent recalculation
+  // Memoized active filter count: data sources contribute 0 when none or all 3 selected, else # selected
   const activeFilterCount = useMemo(() => {
     let count = 0;
-    if (filters.types.length > 0) count++;
+    if (filters.types.length !== 0) count++;
     if (filters.categories.length > 0) count++;
     if (filters.searchFields.length > 0) count++;
     if (filters.fulfillmentStatus.length > 0) count++;
     if (filters.prophecyCategories.length > 0) count++;
-    if (filters.dataSources.length > 0 && filters.dataSources.length < 3)
-      count++;
+    // Data sources: 0 when none or all 3 selected; 1 when 1 selected, 2 when 2 selected
+    if (filters.dataSources.length > 0 && filters.dataSources.length < 4) 
+      count += filters.dataSources.length;
     if (filters.yearRange.min > 0 || filters.yearRange.max < 2024) count++;
-    // New filter counts
     if (filters.quranSurahs.length > 0) count++;
     if (
       filters.quranVerseRange.min > quranMinVerse ||
@@ -171,6 +171,7 @@ export const AdvancedFilterPanel: React.FC<AdvancedFilterPanelProps> = ({
     )
       count++;
     if (filters.quranPlaceOfRevelation.length > 0) count++;
+    // Hadith range: only active when narrowed from full data range (avoids counting default 13143 when data has more)
     if (
       filters.hadithNumberRange.min > hadithMinNumber ||
       filters.hadithNumberRange.max < hadithMaxNumber

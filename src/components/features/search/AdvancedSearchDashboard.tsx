@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useRef } from "react";
+import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { SmartSearchBar } from "./SmartSearchBar";
 import { AdvancedFilterPanel } from "./AdvancedFilterPanel";
 import { SearchResults } from "./SearchResults";
@@ -53,6 +53,25 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
       const [hasSearched, setHasSearched] = useState(false);
       const [actualResultsCount, setActualResultsCount] = useState(0);
       const searchResultsRef = useRef<HTMLDivElement>(null);
+
+      // Sync hadith range max with actual data when still at fallback 13143, so "X active" is accurate
+      const HADITH_MAX_FALLBACK = 13143;
+      useEffect(() => {
+        if (hadithData.length === 0) return;
+        const actualMax = hadithData.length;
+        setFilters((prev) => {
+          if (
+            prev.hadithNumberRange.max === HADITH_MAX_FALLBACK &&
+            actualMax > HADITH_MAX_FALLBACK
+          ) {
+            return {
+              ...prev,
+              hadithNumberRange: { ...prev.hadithNumberRange, max: actualMax },
+            };
+          }
+          return prev;
+        });
+      }, [hadithData.length]);
 
       // Memoized processed data to prevent recalculation on every render
       const processedIslamicData = useMemo(() => {
@@ -519,27 +538,27 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
 
       // Handle clear filters - only update state, don't trigger search
       const handleClearFilters = useCallback(() => {
+        const hadithMax =
+          hadithData.length > 0 ? hadithData.length : HADITH_MAX_FALLBACK;
         const defaultFilters: FilterState = {
           types: [],
           categories: [],
-          searchFields: [], // Default to no search fields selected - user has full control
+          searchFields: [],
           sortBy: "title",
           sortOrder: "asc",
           fulfillmentStatus: [],
           prophecyCategories: [],
           yearRange: { min: 0, max: 2024 },
-          dataSources: ["islamic data", "quran", "hadith"], // Default to all sources selected
-          // Initialize new Quran filters with proper defaults
+          dataSources: ["islamic data", "quran", "hadith"],
           quranSurahs: [],
-          quranVerseRange: { min: 1, max: 6236 }, // Use actual Quran verse range based on loaded data
+          quranVerseRange: { min: 1, max: 6236 },
           quranPlaceOfRevelation: [],
-          quranSajdahOnly: false, // Filter for Sajdah verses only
-          // Initialize new Hadith filters with proper defaults
-          hadithNumberRange: { min: 1, max: 13143 }, // Use actual Hadith range
+          quranSajdahOnly: false,
+          hadithNumberRange: { min: 1, max: hadithMax },
           hadithCategories: [],
         };
         setFilters(defaultFilters);
-      }, []);
+      }, [hadithData.length]);
 
       const islamicDataCount = useMemo(
         () => filteredResults.filter((r) => r.type === "islamic data").length,
