@@ -1,6 +1,7 @@
 [build]
   publish = "dist"
-  command = "npm ci --legacy-peer-deps && npm run build:netlify"
+  # Use npm install so build works with or without package-lock.json (npm ci requires a lockfile)
+  command = "npm install --legacy-peer-deps && npm run build:netlify"
 
 [build.environment]
   NODE_VERSION = "20"
