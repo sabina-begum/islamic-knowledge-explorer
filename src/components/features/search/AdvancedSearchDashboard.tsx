@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+  useEffect,
+} from "react";
 import { SmartSearchBar } from "./SmartSearchBar";
 import { AdvancedFilterPanel } from "./AdvancedFilterPanel";
 import { SearchResults } from "./SearchResults";
@@ -53,6 +59,8 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
       const [hasSearched, setHasSearched] = useState(false);
       const [actualResultsCount, setActualResultsCount] = useState(0);
       const searchResultsRef = useRef<HTMLDivElement>(null);
+      const filtersRef = useRef<FilterState>(filters);
+      filtersRef.current = filters;
 
       // Sync hadith range max with actual data when still at fallback 13143, so "X active" is accurate
       const HADITH_MAX_FALLBACK = 13143;
@@ -137,7 +145,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
       // Memoized statistics calculations
       const totalDataCount = useMemo(
         () => data.length + quranData.length + hadithData.length,
-        [data.length, quranData.length, hadithData.length]
+        [data.length, quranData.length, hadithData.length],
       );
 
       // Calculate the total filtered data count based on current filters
@@ -151,21 +159,21 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
           // Apply Islamic data filters
           if (filters.types.length > 0) {
             islamicCount = data.filter((item) =>
-              filters.types.includes(item.type)
+              filters.types.includes(item.type),
             ).length;
           }
           if (filters.fulfillmentStatus.length > 0) {
             islamicCount = data.filter(
               (item) =>
                 item.fulfillmentStatus &&
-                filters.fulfillmentStatus.includes(item.fulfillmentStatus)
+                filters.fulfillmentStatus.includes(item.fulfillmentStatus),
             ).length;
           }
           if (filters.prophecyCategories.length > 0) {
             islamicCount = data.filter(
               (item) =>
                 item.prophecyCategory &&
-                filters.prophecyCategories.includes(item.prophecyCategory)
+                filters.prophecyCategories.includes(item.prophecyCategory),
             ).length;
           }
           if (filters.yearRange.min > 0 || filters.yearRange.max < 2024) {
@@ -189,7 +197,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
 
           if (filters.quranSurahs.length > 0) {
             quranCount = quranData.filter((ayah) =>
-              filters.quranSurahs.includes(ayah.surah_no.toString())
+              filters.quranSurahs.includes(ayah.surah_no.toString()),
             ).length;
           }
           if (
@@ -206,7 +214,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
           }
           if (filters.quranPlaceOfRevelation.length > 0) {
             quranCount = quranData.filter((ayah) =>
-              filters.quranPlaceOfRevelation.includes(ayah.place_of_revelation)
+              filters.quranPlaceOfRevelation.includes(ayah.place_of_revelation),
             ).length;
           }
           count += quranCount;
@@ -234,60 +242,58 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
         return count;
       }, [data, quranData, hadithData, filters]);
 
-      // Enhanced search function with comprehensive criteria across all data types
+      // Enhanced search function: always reads latest filters from ref to avoid stale closure
       const performSearch = useCallback(
-        (query: string, filterState: FilterState) => {
+        (query: string) => {
           setIsSearching(true);
           setHasSearched(true);
 
-          // Simulate search delay for better UX
           setTimeout(() => {
+            const currentFilters = filtersRef.current;
             let results: UnifiedSearchResult[] = [];
 
             // Process Islamic data
-            if (filterState.dataSources.includes("islamic data")) {
+            if (currentFilters.dataSources.includes("islamic data")) {
               results.push(...processedIslamicData);
             }
 
             // Process Quran data with enhanced filtering
-            if (filterState.dataSources.includes("quran")) {
+            if (currentFilters.dataSources.includes("quran")) {
               let quranResults = processedQuranData;
 
-              // Apply Quran-specific filters
-              if (filterState.quranSurahs.length > 0) {
+              if (currentFilters.quranSurahs.length > 0) {
                 quranResults = quranResults.filter((result) => {
                   const ayah = result.data as QuranAyah;
-                  return filterState.quranSurahs.includes(
-                    ayah.surah_no.toString()
+                  return currentFilters.quranSurahs.includes(
+                    ayah.surah_no.toString(),
                   );
                 });
               }
 
               if (
-                filterState.quranVerseRange.min !== 1 ||
-                filterState.quranVerseRange.max !== 6236
+                currentFilters.quranVerseRange.min !== 1 ||
+                currentFilters.quranVerseRange.max !== 6236
               ) {
                 quranResults = quranResults.filter((result) => {
                   const ayah = result.data as QuranAyah;
                   const verseNumber = parseInt(ayah.ayah_no_surah.toString());
                   return (
-                    verseNumber >= filterState.quranVerseRange.min &&
-                    verseNumber <= filterState.quranVerseRange.max
+                    verseNumber >= currentFilters.quranVerseRange.min &&
+                    verseNumber <= currentFilters.quranVerseRange.max
                   );
                 });
               }
 
-              if (filterState.quranPlaceOfRevelation.length > 0) {
+              if (currentFilters.quranPlaceOfRevelation.length > 0) {
                 quranResults = quranResults.filter((result) => {
                   const ayah = result.data as QuranAyah;
-                  return filterState.quranPlaceOfRevelation.includes(
-                    ayah.place_of_revelation
+                  return currentFilters.quranPlaceOfRevelation.includes(
+                    ayah.place_of_revelation,
                   );
                 });
               }
 
-              // Apply Sajdah filter
-              if (filterState.quranSajdahOnly) {
+              if (currentFilters.quranSajdahOnly) {
                 quranResults = quranResults.filter((result) => {
                   const ayah = result.data as QuranAyah;
                   return ayah.sajah_ayah === true;
@@ -298,25 +304,31 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
             }
 
             // Process Hadith data with enhanced filtering
-            if (filterState.dataSources.includes("hadith")) {
+            if (currentFilters.dataSources.includes("hadith")) {
               let hadithResults = processedHadithData;
 
-              // Apply Hadith-specific filters
               if (
-                filterState.hadithNumberRange.min !== 1 ||
-                filterState.hadithNumberRange.max !== hadithData.length
+                currentFilters.hadithNumberRange.min !== 1 ||
+                currentFilters.hadithNumberRange.max !== hadithData.length
               ) {
                 hadithResults = hadithResults.filter((result) => {
-                  const hadithNumber = parseInt(result.data.number);
+                  const hadith = result.data as HadithEntry;
+                  const hadithNumber = parseInt(hadith.number, 10);
+                  if (Number.isNaN(hadithNumber)) return true;
                   return (
-                    hadithNumber >= filterState.hadithNumberRange.min &&
-                    hadithNumber <= filterState.hadithNumberRange.max
+                    hadithNumber >= currentFilters.hadithNumberRange.min &&
+                    hadithNumber <= currentFilters.hadithNumberRange.max
                   );
                 });
               }
 
               results.push(...hadithResults);
             }
+
+            // Defensive: only keep results whose type is in selected data sources
+            results = results.filter((result) =>
+              currentFilters.dataSources.includes(result.type),
+            );
 
             // Apply search query with enhanced field coverage
             if (query.trim()) {
@@ -334,19 +346,19 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
 
                 // Check if ANY search terms are found (more flexible)
                 return searchTerms.some((term) =>
-                  searchableText.includes(term)
+                  searchableText.includes(term),
                 );
               });
             }
 
             // Apply type filters (for Islamic data only)
-            if (filterState.types.length > 0) {
+            if (currentFilters.types.length > 0) {
               results = results.filter((result) => {
                 if (result.type === "islamic data") {
                   const islamicData = result.data as IslamicData;
                   return (
                     islamicData.type &&
-                    filterState.types.includes(islamicData.type)
+                    currentFilters.types.includes(islamicData.type)
                   );
                 }
                 return true; // Keep non-Islamic data results
@@ -354,14 +366,14 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
             }
 
             // Apply fulfillment status filters (for Islamic data only)
-            if (filterState.fulfillmentStatus.length > 0) {
+            if (currentFilters.fulfillmentStatus.length > 0) {
               results = results.filter((result) => {
                 if (result.type === "islamic data") {
                   const islamicData = result.data as IslamicData;
                   return (
                     islamicData.fulfillmentStatus &&
-                    filterState.fulfillmentStatus.includes(
-                      islamicData.fulfillmentStatus
+                    currentFilters.fulfillmentStatus.includes(
+                      islamicData.fulfillmentStatus,
                     )
                   );
                 }
@@ -370,14 +382,14 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
             }
 
             // Apply prophecy category filters (for Islamic data only)
-            if (filterState.prophecyCategories.length > 0) {
+            if (currentFilters.prophecyCategories.length > 0) {
               results = results.filter((result) => {
                 if (result.type === "islamic data") {
                   const islamicData = result.data as IslamicData;
                   return (
                     islamicData.prophecyCategory &&
-                    filterState.prophecyCategories.includes(
-                      islamicData.prophecyCategory
+                    currentFilters.prophecyCategories.includes(
+                      islamicData.prophecyCategory,
                     )
                   );
                 }
@@ -387,8 +399,8 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
 
             // Apply year range filters (for Islamic data only)
             if (
-              filterState.yearRange.min > 0 ||
-              filterState.yearRange.max < 2024
+              currentFilters.yearRange.min > 0 ||
+              currentFilters.yearRange.max < 2024
             ) {
               results = results.filter((result) => {
                 if (result.type === "islamic data") {
@@ -397,10 +409,10 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
                   const yearFulfilled = islamicData.yearFulfilled || 0;
 
                   return (
-                    (yearRevealed >= filterState.yearRange.min &&
-                      yearRevealed <= filterState.yearRange.max) ||
-                    (yearFulfilled >= filterState.yearRange.min &&
-                      yearFulfilled <= filterState.yearRange.max)
+                    (yearRevealed >= currentFilters.yearRange.min &&
+                      yearRevealed <= currentFilters.yearRange.max) ||
+                    (yearFulfilled >= currentFilters.yearRange.min &&
+                      yearFulfilled <= currentFilters.yearRange.max)
                   );
                 }
                 return true; // Keep non-Islamic data results
@@ -412,7 +424,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
               let aValue: string | number = "";
               let bValue: string | number = "";
 
-              switch (filterState.sortBy) {
+              switch (currentFilters.sortBy) {
                 case "title":
                   aValue = a.title || "";
                   bValue = b.title || "";
@@ -450,13 +462,13 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
                       (term) =>
                         a.title?.toLowerCase().includes(term) ||
                         a.content?.toLowerCase().includes(term) ||
-                        false
+                        false,
                     ).length;
                     bValue = searchTerms.filter(
                       (term) =>
                         b.title?.toLowerCase().includes(term) ||
                         b.content?.toLowerCase().includes(term) ||
-                        false
+                        false,
                     ).length;
                   } else {
                     aValue = 0;
@@ -470,12 +482,12 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
 
               if (typeof aValue === "string" && typeof bValue === "string") {
                 const comparison = aValue.localeCompare(bValue);
-                return filterState.sortOrder === "asc"
+                return currentFilters.sortOrder === "asc"
                   ? comparison
                   : -comparison;
               } else {
                 const comparison = (aValue as number) - (bValue as number);
-                return filterState.sortOrder === "asc"
+                return currentFilters.sortOrder === "asc"
                   ? comparison
                   : -comparison;
               }
@@ -508,7 +520,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
           hadithData.length,
           totalDataCount,
           filteredDataCount,
-        ]
+        ],
       );
 
       // Handle search query changes - only update state, don't trigger search
@@ -547,17 +559,17 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
 
       const islamicDataCount = useMemo(
         () => filteredResults.filter((r) => r.type === "islamic data").length,
-        [filteredResults]
+        [filteredResults],
       );
 
       const quranCount = useMemo(
         () => filteredResults.filter((r) => r.type === "quran").length,
-        [filteredResults]
+        [filteredResults],
       );
 
       const hadithCount = useMemo(
         () => filteredResults.filter((r) => r.type === "hadith").length,
-        [filteredResults]
+        [filteredResults],
       );
 
       // Memoized percentage calculation - based on filtered data count
@@ -624,7 +636,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
           {/* Confirm Search Button */}
           <div className="flex justify-center gap-4">
             <button
-              onClick={() => performSearch(searchQuery, filters)}
+              onClick={() => performSearch(searchQuery)}
               disabled={isSearching || filters.dataSources.length === 0}
               className="px-8 py-3 bg-green-600 hover:bg-green-700 disabled:bg-stone-400 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2"
             >
@@ -916,5 +928,5 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
           )}
         </div>
       );
-    }
+    },
   );

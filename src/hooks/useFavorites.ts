@@ -148,7 +148,7 @@ export function useFavorites() {
           // Load additional pages
           for (let page = 2; page <= data.totalPages; page++) {
             const pageDoc = await getDoc(
-              doc(favoritesRef, `${user.uid}_page_${page}`)
+              doc(favoritesRef, `${user.uid}_page_${page}`),
             );
             if (pageDoc.exists()) {
               const pageData = pageDoc.data();
@@ -208,12 +208,12 @@ export function useFavorites() {
       // Use localStorage when not authenticated
       try {
         const localFavorites = JSON.parse(
-          localStorage.getItem(LOCAL_STORAGE_KEY) || "[]"
+          localStorage.getItem(LOCAL_STORAGE_KEY) || "[]",
         );
 
         // Check if item already exists
         const exists = localFavorites.some((m: FavoriteItem) =>
-          isSameItem(m, item)
+          isSameItem(m, item),
         );
 
         if (!exists) {
@@ -269,7 +269,7 @@ export function useFavorites() {
 
         // Check if item already exists
         const exists = currentFavorites.some((m: FavoriteItem) =>
-          isSameItem(m, item)
+          isSameItem(m, item),
         );
 
         if (!exists) {
@@ -287,7 +287,7 @@ export function useFavorites() {
               Math.floor(currentFavorites.length / FAVORITES_PER_DOC) + 1;
             const newPageRef = doc(
               favoritesRef,
-              `${user.uid}_page_${newPageNum}`
+              `${user.uid}_page_${newPageNum}`,
             );
 
             await setDoc(newPageRef, {
@@ -324,10 +324,10 @@ export function useFavorites() {
       // Use localStorage when not authenticated
       try {
         const localFavorites = JSON.parse(
-          localStorage.getItem(LOCAL_STORAGE_KEY) || "[]"
+          localStorage.getItem(LOCAL_STORAGE_KEY) || "[]",
         );
         const updatedFavorites = localFavorites.filter(
-          (m: FavoriteItem) => !isSameItem(m, item)
+          (m: FavoriteItem) => !isSameItem(m, item),
         );
 
         const compressedData = compressData(updatedFavorites);
@@ -356,7 +356,7 @@ export function useFavorites() {
 
         // Check if item is in main document
         const itemIndex = currentFavorites.findIndex((m: FavoriteItem) =>
-          isSameItem(m, item)
+          isSameItem(m, item),
         );
 
         if (itemIndex !== -1) {
@@ -413,7 +413,7 @@ export function useFavorites() {
               const pageFavorites = pageData.islamicData || [];
 
               const pageItemIndex = pageFavorites.findIndex((m: FavoriteItem) =>
-                isSameItem(m, item)
+                isSameItem(m, item),
               );
 
               if (pageItemIndex !== -1) {
