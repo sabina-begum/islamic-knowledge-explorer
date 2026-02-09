@@ -82,8 +82,8 @@ export const HomePageTabs: React.FC<HomePageTabsProps> = ({
   return (
     <div className="border-b border-neutral-200 dark:border-stone-700 bg-stone-200 dark:bg-stone-700 rounded-t-md">
       {/* Single responsive row: scrollable on small screens, centered on desktop */}
-      <div className="overflow-x-auto scrollbar-hide">
-        <div className="flex gap-2 p-3 lg:p-4 min-w-max justify-center lg:justify-start">
+      <div className="overflow-x-auto overflow-y-hidden scrollbar-hide min-w-0 touch-pan-x">
+        <div className="flex gap-2 px-0.5 py-3 lg:p-4 min-w-max justify-start">
           {tabs.map((tab) => (
             <button
               key={tab.id}
