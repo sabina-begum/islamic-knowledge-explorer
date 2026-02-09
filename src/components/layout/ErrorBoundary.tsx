@@ -76,10 +76,7 @@ export class ErrorBoundary extends Component<Props, State> {
       };
 
       // In a real app, you would send this to your error reporting service
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log("Error report:", errorReport);
-      }
+      void errorReport;
 
       // For now, just show an alert
       alert("Error has been reported. Thank you for your feedback!");

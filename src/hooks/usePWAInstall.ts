@@ -27,7 +27,7 @@ const handleBeforeInstallPrompt = (e: Event) => {
   globalDeferredPrompt = e as BeforeInstallPromptEvent;
   if (import.meta.env.DEV) {
     // eslint-disable-next-line no-console
-    console.log("PWA install prompt captured globally");
+    // PWA install prompt captured globally
   }
   notifySubscribers();
 };
@@ -37,7 +37,7 @@ const handleAppInstalled = () => {
   globalDeferredPrompt = null;
   if (import.meta.env.DEV) {
     // eslint-disable-next-line no-console
-    console.log("PWA installed globally");
+    // PWA installed globally
   }
   notifySubscribers();
 };
@@ -60,7 +60,7 @@ const initializeGlobalListeners = () => {
     globalIsListening = true;
     if (import.meta.env.DEV) {
       // eslint-disable-next-line no-console
-      console.log("Global PWA listeners initialized");
+      // Global PWA listeners initialized
     }
   }
 };
@@ -124,7 +124,7 @@ export const usePWAInstall = () => {
       if (outcome === "accepted") {
         if (import.meta.env.DEV) {
           // eslint-disable-next-line no-console
-          console.log("User accepted the install prompt");
+          // User accepted the install prompt
         }
         globalIsInstalled = true;
         globalDeferredPrompt = null;
@@ -132,7 +132,7 @@ export const usePWAInstall = () => {
       } else {
         if (import.meta.env.DEV) {
           // eslint-disable-next-line no-console
-          console.log("User dismissed the install prompt");
+          // User dismissed the install prompt
         }
       }
     } catch (error) {

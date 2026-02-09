@@ -77,14 +77,14 @@ export const PWAInstallPrompt: React.FC = () => {
         if (outcome === "accepted") {
           if (import.meta.env.DEV) {
             // eslint-disable-next-line no-console
-            console.log("User accepted the install prompt");
+            // User accepted the install prompt
           }
           setIsInstalled(true);
           setShowInstallPrompt(false);
         } else {
           if (import.meta.env.DEV) {
             // eslint-disable-next-line no-console
-            console.log("User dismissed the install prompt");
+            // User dismissed the install prompt
           }
         }
       } catch (error) {

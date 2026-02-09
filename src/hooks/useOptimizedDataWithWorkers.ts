@@ -54,10 +54,6 @@ export function useOptimizedDataWithWorkers(
   useEffect(() => {
     // Completely disable workers in build environment
     if (import.meta.env.VITE_DISABLE_WORKERS) {
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log("Web Workers disabled for build environment");
-      }
       return;
     }
 
@@ -81,14 +77,6 @@ export function useOptimizedDataWithWorkers(
 
           switch (type) {
             case "INDEX_BUILT":
-              if (import.meta.env.DEV) {
-                // eslint-disable-next-line no-console
-                console.log(
-                  "Search index built with",
-                  payload.count,
-                  "entries"
-                );
-              }
               setState((prev) => ({ ...prev, isIndexing: false }));
               break;
 
@@ -119,19 +107,9 @@ export function useOptimizedDataWithWorkers(
         };
 
         workerRef.current.onerror = () => {
-          if (import.meta.env.DEV) {
-            // eslint-disable-next-line no-console
-            console.error("Worker error occurred");
-          }
           setState((prev) => ({ ...prev, error: "Worker error occurred" }));
         };
       } catch {
-        if (import.meta.env.DEV) {
-          // eslint-disable-next-line no-console
-          console.warn(
-            "Web Workers not supported, falling back to main thread"
-          );
-        }
         setState((prev) => ({ ...prev, error: "Web Workers not supported" }));
       }
     }

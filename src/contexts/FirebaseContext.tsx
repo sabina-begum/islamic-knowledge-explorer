@@ -87,14 +87,7 @@ export const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({
           try {
             const status = await dataMigrationService.checkMigrationStatus();
             setMigrationStatus(status);
-          } catch (err) {
-            if (import.meta.env.DEV) {
-              // eslint-disable-next-line no-console
-              console.warn(
-                "Migration check failed, continuing with local data:",
-                err
-              );
-            }
+          } catch {
             // Set default migration status
             setMigrationStatus({
               islamicDataCount: 0,
@@ -126,11 +119,8 @@ export const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({
         try {
           const localData = await import("../data/islamic_data.json");
           setIslamicData((localData.default as unknown as IslamicData[]) || []);
-        } catch (err) {
-          if (import.meta.env.DEV) {
-            // eslint-disable-next-line no-console
-            console.warn("Failed to load local Islamic data:", err);
-          }
+        } catch {
+          // Load local Islamic data failed
         }
         return;
       }
@@ -140,12 +130,8 @@ export const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({
           itemsPerPage: 1000,
         });
         setIslamicData([...(result.data || [])]);
-      } catch (err) {
-        if (import.meta.env.DEV) {
-          // eslint-disable-next-line no-console
-          console.warn("Failed to load Islamic data (using local data):", err);
-        }
-        // Don't throw error, just log it
+      } catch {
+        // Fallback to local data
       }
     },
     [isFirebaseAvailable]
@@ -159,11 +145,8 @@ export const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({
         try {
           const localData = await import("../data/The Quran Dataset.json");
           setQuranData((localData.default as unknown as QuranAyah[]) || []);
-        } catch (err) {
-          if (import.meta.env.DEV) {
-            // eslint-disable-next-line no-console
-            console.warn("Failed to load local Quran data:", err);
-          }
+        } catch {
+          // Load local Quran data failed
         }
         return;
       }
@@ -171,12 +154,8 @@ export const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         const data = await firestoreService.getQuranData(filters);
         setQuranData(data);
-      } catch (err) {
-        if (import.meta.env.DEV) {
-          // eslint-disable-next-line no-console
-          console.warn("Failed to load Quran data (using local data):", err);
-        }
-        // Don't throw error, just log it
+      } catch {
+        // Fallback to local data
       }
     },
     [isFirebaseAvailable]
@@ -190,11 +169,8 @@ export const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({
         try {
           const localData = await import("../data/Sahih Bukhari.json");
           setHadithData((localData.default as unknown as HadithEntry[]) || []);
-        } catch (err) {
-          if (import.meta.env.DEV) {
-            // eslint-disable-next-line no-console
-            console.warn("Failed to load local Hadith data:", err);
-          }
+        } catch {
+          // Load local Hadith data failed
         }
         return;
       }
@@ -202,12 +178,8 @@ export const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         const data = await firestoreService.getHadithData(filters);
         setHadithData(data);
-      } catch (err) {
-        if (import.meta.env.DEV) {
-          // eslint-disable-next-line no-console
-          console.warn("Failed to load Hadith data (using local data):", err);
-        }
-        // Don't throw error, just log it
+      } catch {
+        // Fallback to local data
       }
     },
     [isFirebaseAvailable]

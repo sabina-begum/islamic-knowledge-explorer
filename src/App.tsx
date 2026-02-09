@@ -102,11 +102,6 @@ function App() {
       navigator.serviceWorker
         .register("/sw.js", { scope: "/" })
         .then((registration) => {
-          if (import.meta.env.DEV) {
-            // eslint-disable-next-line no-console
-            console.log("✅ Service Worker registered:", registration);
-          }
-
           // Handle service worker updates
           registration.addEventListener("updatefound", () => {
             const newWorker = registration.installing;
@@ -116,55 +111,35 @@ function App() {
                   newWorker.state === "installed" &&
                   navigator.serviceWorker.controller
                 ) {
-                  // New service worker available
-                  if (import.meta.env.DEV) {
-                    // eslint-disable-next-line no-console
-                    console.log("🔄 New service worker available");
-                  }
-                  // Could show user notification about update
+                  // New service worker available; could show user notification about update
                 }
               });
             }
           });
         })
-        .catch((error) => {
-          if (import.meta.env.DEV) {
-            // eslint-disable-next-line no-console
-            console.error("❌ Service Worker registration failed:", error);
-          }
+        .catch(() => {
+          // Service Worker registration failed
         });
     }
 
     // Initialize route prefetching after a delay
     setTimeout(() => {
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log("🚀 Initializing route prefetching");
-      }
       // Route prefetcher is already initialized as singleton
     }, 2000);
 
     // Performance monitoring
     if ("performance" in window) {
       // Monitor largest contentful paint
-      new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-          if (import.meta.env.DEV) {
-            // eslint-disable-next-line no-console
-            console.log(`📊 LCP: ${entry.startTime.toFixed(2)}ms`);
-          }
-        }
+      new PerformanceObserver(() => {
+        // LCP monitoring (metrics can be sent to analytics if needed)
       }).observe({ entryTypes: ["largest-contentful-paint"] });
 
-      // Monitor cumulative layout shift
       new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          const layoutShiftEntry = entry as any; // Layout shift entries have additional properties
-          if (!layoutShiftEntry.hadRecentInput) {
-            if (import.meta.env.DEV) {
-              // eslint-disable-next-line no-console
-              console.log(`📊 CLS: ${layoutShiftEntry.value.toFixed(4)}`);
-            }
+          const e = entry as { hadRecentInput?: boolean };
+          if (!e.hadRecentInput) {
+            // CLS monitoring (metrics can be sent to analytics if needed)
+            void e;
           }
         }
       }).observe({ entryTypes: ["layout-shift"] });

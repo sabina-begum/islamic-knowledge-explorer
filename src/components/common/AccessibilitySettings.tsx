@@ -107,15 +107,6 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
       );
       const isCompliant = ratio >= 4.5;
 
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log("WCAG Compliance Result:", {
-          ratio: ratio.toFixed(2),
-          compliant: isCompliant,
-          level: ratio >= 7 ? "AAA" : ratio >= 4.5 ? "AA" : "Fail",
-        });
-      }
-
       alert(
         `Contrast ratio: ${ratio.toFixed(2)} - ${
           isCompliant ? "WCAG AA Compliant" : "Not compliant"

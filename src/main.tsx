@@ -14,32 +14,10 @@ import "./utils/copyrightProtection";
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      // Skip aggressive unregistration that causes refresh loops
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log("Starting service worker registration");
-      }
-
-      // Register new service worker with cache busting
       const registration = await navigator.serviceWorker.register(
         "/sw.js?v=2.2.0",
-        {
-          updateViaCache: "none", // Force bypass cache for service worker
-        }
+        { updateViaCache: "none" }
       );
-
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log("SW registered: ", registration);
-      }
-
-      // Let updates happen naturally without forcing
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log("Service worker registered successfully");
-      }
-
-      // Listen for updates
       registration.addEventListener("updatefound", () => {
         const newWorker = registration.installing;
         if (newWorker) {
@@ -48,20 +26,13 @@ if ("serviceWorker" in navigator) {
               newWorker.state === "installed" &&
               navigator.serviceWorker.controller
             ) {
-              // New SW is available, will activate on next visit
-              if (import.meta.env.DEV) {
-                // eslint-disable-next-line no-console
-                console.log("New SW available, will activate on next visit");
-              }
+              // New SW available, will activate on next visit
             }
           });
         }
       });
-    } catch (registrationError) {
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log("SW registration failed: ", registrationError);
-      }
+    } catch {
+      // SW registration failed
     }
   });
 }
@@ -71,7 +42,12 @@ if (!rootElement) throw new Error("Root element not found");
 
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <LanguageProvider>
         <AuthProvider>
           <AppReadyProvider>

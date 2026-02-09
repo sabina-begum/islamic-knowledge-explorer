@@ -163,7 +163,7 @@ ctx.addEventListener(
     } else {
       if (import.meta.env.DEV) {
         // eslint-disable-next-line no-console
-        console.warn("Unknown message type:", message.type);
+        // Unknown message type
       }
     }
   }

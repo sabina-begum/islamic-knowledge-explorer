@@ -34,14 +34,6 @@ export default function HomePageWrapper() {
   // Sync data with Zustand store
   useEffect(() => {
     if (optimizedData.data.length > 0) {
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log(
-          "HomePageWrapper - Loading Islamic data:",
-          optimizedData.data.length,
-          "items (optimized)"
-        );
-      }
       setCards(optimizedData.data);
       setCardsLoading(false);
       setCardsError(null);
@@ -61,38 +53,15 @@ export default function HomePageWrapper() {
 
   // Export handlers
   const handleExportCSV = () => {
-    // CSV export functionality
-    if (import.meta.env.DEV) {
-      // eslint-disable-next-line no-console
-      console.log(t("loading.exportCSV"));
-    }
     setToast(t("loading.csvExported"));
   };
 
   const handleExportJSON = () => {
-    // JSON export functionality
-    if (import.meta.env.DEV) {
-      // eslint-disable-next-line no-console
-      console.log(t("loading.exportJSON"));
-    }
     setToast(t("loading.jsonExported"));
   };
 
   // Get unique types for filters
   const types = [...new Set(optimizedData.data.map((card) => card.type))];
-  if (import.meta.env.DEV) {
-    // eslint-disable-next-line no-console
-    console.log("HomePageWrapper - Islamic data:", optimizedData.data.length);
-    // eslint-disable-next-line no-console
-    console.log("HomePageWrapper - Types:", types);
-    // eslint-disable-next-line no-console
-    console.log("HomePageWrapper - Progress:", optimizedData.progress + "%");
-    // eslint-disable-next-line no-console
-    console.log(
-      "HomePageWrapper - Worker supported:",
-      optimizedData.workerSupported
-    );
-  }
 
   // Calculate paginated cards based on current page
   const itemsPerPage = 9;

@@ -25,21 +25,8 @@ export function useIslamicData(loadingDelay = 1000) {
           } as IslamicData)
       );
 
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log("useIslamicData - Loaded Islamic data:", loadedIslamicData);
-        // eslint-disable-next-line no-console
-        console.log("useIslamicData - Data length:", loadedIslamicData.length);
-        // eslint-disable-next-line no-console
-        console.log("useIslamicData - First item:", loadedIslamicData[0]);
-      }
-
       setIslamicData(loadedIslamicData);
-    } catch (error) {
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.error("useIslamicData - Error loading data:", error);
-      }
+    } catch {
       setError("Failed to load Islamic data");
     } finally {
       setLoading(false);

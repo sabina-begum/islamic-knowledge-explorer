@@ -44,10 +44,6 @@ class RoutePrefetcher {
   private init(): void {
     // Check network conditions
     if (this.config.onlyOnWifi && !this.isWiFiConnection()) {
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log("🌐 Prefetching disabled: Not on WiFi");
-      }
       return;
     }
 
@@ -135,11 +131,6 @@ class RoutePrefetcher {
    * Prefetch critical routes immediately
    */
   private async prefetchCriticalRoutes(): Promise<void> {
-    if (import.meta.env.DEV) {
-      // eslint-disable-next-line no-console
-      console.log("🚀 Starting critical route prefetching");
-    }
-
     for (const route of this.config.routes) {
       await this.prefetchRoute(route);
       // Small delay between prefetches to avoid overwhelming the browser
@@ -163,11 +154,6 @@ class RoutePrefetcher {
     });
 
     try {
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log(`🔄 Prefetching route: ${route}`);
-      }
-
       // Prefetch the component
       await this.prefetchComponent(route);
 
@@ -182,16 +168,7 @@ class RoutePrefetcher {
         timestamp: Date.now(),
         status: "loaded",
       });
-
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log(`✅ Prefetched route: ${route}`);
-      }
-    } catch (error) {
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.error(`❌ Failed to prefetch route ${route}:`, error);
-      }
+    } catch {
       this.prefetchedRoutes.set(route, {
         route,
         timestamp: Date.now(),

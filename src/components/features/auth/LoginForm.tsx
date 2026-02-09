@@ -179,7 +179,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 // TODO: Implement password reset
                 if (import.meta.env.DEV) {
                   // eslint-disable-next-line no-console
-                  console.log("Password reset requested");
+                  // Password reset requested
                 }
               }}
               className="text-sm text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300"
