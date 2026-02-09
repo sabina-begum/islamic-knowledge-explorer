@@ -162,7 +162,11 @@ export const ChartsDashboard: React.FC<ChartsDashboardProps> = memo(
           {charts.map((chart) => {
             const ChartComponent = chart.component;
             return (
-              <div key={chart.id} className="w-full" ref={chart.ref}>
+              <div
+                key={chart.id}
+                className="w-full min-w-0 overflow-hidden"
+                ref={chart.ref}
+              >
                 <ChartComponent data={sanitizedData as IslamicData[]} />
               </div>
             );
