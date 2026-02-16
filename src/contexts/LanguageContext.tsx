@@ -370,6 +370,12 @@ const translations: Record<Language, Record<string, string>> = {
     "search.crossReferenceDesc": "Find connections between sources",
     "search.consultScholars":
       "(always consult qualified Islamic scholars for complex topics)",
+    "search.quranSelectFilter":
+      "Quran is selected but no filter applied. Select at least one option (e.g. Surah, verse range, or place of revelation) above to see Quran results.",
+    "search.islamicSelectFilter":
+      "Featured Islamic Sources is selected but no filter applied. Select at least one option (e.g. type, fulfillment status, prophecy category, or year range) above to see results.",
+    "search.hadithSelectFilter":
+      "Hadiths is selected but no filter applied. Select at least one option (e.g. chapter or hadith number range) above to see hadith results.",
     "search.advancedFiltering": "Advanced Filtering",
     "search.quranFilters": "Quran Filters:",
     "search.quranFiltersDesc": "By Surah, verse number, place of revelation",
@@ -797,6 +803,12 @@ const translations: Record<Language, Record<string, string>> = {
     "search.crossReference": "المرجع المتبادل:",
     "search.crossReferenceDesc": "البحث عن الروابط بين المصادر",
     "search.consultScholars": "(استشر العلماء دائماً للمواضيع المعقدة)",
+    "search.quranSelectFilter":
+      "القرآن مُختار لكن بدون فلتر. اختر خياراً واحداً على الأقل (مثلاً سورة، نطاق آيات، أو مكان النزول) أعلاه لرؤية نتائج القرآن.",
+    "search.islamicSelectFilter":
+      "المصادر الإسلامية المميزة مُختارة لكن بدون فلتر. اختر خياراً واحداً على الأقل (مثلاً النوع، حالة التحقق، فئة النبوة، أو نطاق السنة) أعلاه لرؤية النتائج.",
+    "search.hadithSelectFilter":
+      "الأحاديث مُختارة لكن بدون فلتر. اختر خياراً واحداً على الأقل (مثلاً الباب أو نطاق رقم الحديث) أعلاه لرؤية نتائج الأحاديث.",
     "search.advancedFiltering": "الفلترة المتقدمة",
     "search.quranFilters": "فلاتر القرآن:",
     "search.quranFiltersDesc": "حسب السورة ورقم الآية ومكان النزول",

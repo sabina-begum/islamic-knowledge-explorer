@@ -42,7 +42,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
         fulfillmentStatus: [],
         prophecyCategories: [],
         yearRange: { min: 0, max: 2024 },
-        dataSources: ["islamic data", "quran", "hadith"], // Default to all sources selected
+        dataSources: [], // Default: nothing selected - user must select at least one source and one filter
         // Initialize new Quran filters with proper defaults
         quranSurahs: [],
         quranVerseRange: { min: 1, max: 6236 }, // Use actual Quran verse range based on loaded data
@@ -252,99 +252,219 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
             const currentFilters = filtersRef.current;
             let results: UnifiedSearchResult[] = [];
 
-            // Process Islamic data
-            if (currentFilters.dataSources.includes("islamic data")) {
-              results.push(...processedIslamicData);
+            // Guard: if no valid selection (no sources or any selected source has no filter), return nothing and show inline messages
+            if (currentFilters.dataSources.length === 0) {
+              setFilteredResults([]);
+              setActualResultsCount(0);
+              setIsSearching(false);
+              return;
             }
-
-            // Process Quran data with enhanced filtering
-            if (currentFilters.dataSources.includes("quran")) {
-              let quranResults = processedQuranData;
-
-              if (currentFilters.quranSurahs.length > 0) {
-                quranResults = quranResults.filter((result) => {
-                  const ayah = result.data as QuranAyah;
-                  return currentFilters.quranSurahs.includes(
-                    ayah.surah_no.toString(),
-                  );
-                });
-              }
-
-              if (
+            const quranNoFilter =
+              currentFilters.dataSources.includes("quran") &&
+              !(
+                currentFilters.quranSurahs.length > 0 ||
                 currentFilters.quranVerseRange.min !== 1 ||
-                currentFilters.quranVerseRange.max !== 6236
-              ) {
-                quranResults = quranResults.filter((result) => {
-                  const ayah = result.data as QuranAyah;
-                  const verseNumber = parseInt(ayah.ayah_no_surah.toString());
-                  return (
-                    verseNumber >= currentFilters.quranVerseRange.min &&
-                    verseNumber <= currentFilters.quranVerseRange.max
-                  );
-                });
-              }
-
-              if (currentFilters.quranPlaceOfRevelation.length > 0) {
-                quranResults = quranResults.filter((result) => {
-                  const ayah = result.data as QuranAyah;
-                  return currentFilters.quranPlaceOfRevelation.includes(
-                    ayah.place_of_revelation,
-                  );
-                });
-              }
-
-              if (currentFilters.quranSajdahOnly) {
-                quranResults = quranResults.filter((result) => {
-                  const ayah = result.data as QuranAyah;
-                  return ayah.sajah_ayah === true;
-                });
-              }
-
-              results.push(...quranResults);
+                currentFilters.quranVerseRange.max !== 6236 ||
+                currentFilters.quranPlaceOfRevelation.length > 0 ||
+                currentFilters.quranSajdahOnly
+              );
+            const islamicNoFilter =
+              currentFilters.dataSources.includes("islamic data") &&
+              !(
+                currentFilters.types.length > 0 ||
+                currentFilters.fulfillmentStatus.length > 0 ||
+                currentFilters.prophecyCategories.length > 0 ||
+                currentFilters.yearRange.min > 0 ||
+                currentFilters.yearRange.max < 2024
+              );
+            const hadithSourceSelected = currentFilters.dataSources.some(
+              (s) => String(s).toLowerCase().trim() === "hadith"
+            );
+            // Hadith: only chapter counts as "filter applied" for guard (number range uses data min/max and can falsely be true when data has large ids)
+            const hadithNoFilter =
+              hadithSourceSelected &&
+              currentFilters.hadithCategories.length === 0;
+            if (quranNoFilter || islamicNoFilter || hadithNoFilter) {
+              setFilteredResults([]);
+              setActualResultsCount(0);
+              setIsSearching(false);
+              return;
             }
 
-            // Process Hadith data (mirror Quran/Islamic: apply only explicit filters)
+            // Process Islamic data: only include results when at least one filter is selected (default: no results)
+            if (currentFilters.dataSources.includes("islamic data")) {
+              const hasIslamicTypes = currentFilters.types.length > 0;
+              const hasFulfillment =
+                currentFilters.fulfillmentStatus.length > 0;
+              const hasProphecy =
+                currentFilters.prophecyCategories.length > 0;
+              const yearRangeNarrowed =
+                currentFilters.yearRange.min > 0 ||
+                currentFilters.yearRange.max < 2024;
+              const hasIslamicFilter =
+                hasIslamicTypes ||
+                hasFulfillment ||
+                hasProphecy ||
+                yearRangeNarrowed;
+
+              if (hasIslamicFilter) {
+                let islamicResults = processedIslamicData;
+
+                if (hasIslamicTypes) {
+                  islamicResults = islamicResults.filter((result) => {
+                    const item = result.data as IslamicData;
+                    return (
+                      item.type &&
+                      currentFilters.types.includes(item.type)
+                    );
+                  });
+                }
+                if (hasFulfillment) {
+                  islamicResults = islamicResults.filter((result) => {
+                    const item = result.data as IslamicData;
+                    return (
+                      item.fulfillmentStatus &&
+                      currentFilters.fulfillmentStatus.includes(
+                        item.fulfillmentStatus,
+                      )
+                    );
+                  });
+                }
+                if (hasProphecy) {
+                  islamicResults = islamicResults.filter((result) => {
+                    const item = result.data as IslamicData;
+                    return (
+                      item.prophecyCategory &&
+                      currentFilters.prophecyCategories.includes(
+                        item.prophecyCategory,
+                      )
+                    );
+                  });
+                }
+                if (yearRangeNarrowed) {
+                  islamicResults = islamicResults.filter((result) => {
+                    const item = result.data as IslamicData;
+                    const yearRevealed = item.yearRevealed ?? 0;
+                    const yearFulfilled = item.yearFulfilled ?? 0;
+                    return (
+                      (yearRevealed >= currentFilters.yearRange.min &&
+                        yearRevealed <= currentFilters.yearRange.max) ||
+                      (yearFulfilled >= currentFilters.yearRange.min &&
+                        yearFulfilled <= currentFilters.yearRange.max)
+                    );
+                  });
+                }
+
+                results.push(...islamicResults);
+              }
+            }
+
+            // Process Quran data: only include results when at least one Quran filter is selected (default: no results)
+            if (currentFilters.dataSources.includes("quran")) {
+              const hasQuranSurahs = currentFilters.quranSurahs.length > 0;
+              const verseRangeNarrowed =
+                currentFilters.quranVerseRange.min !== 1 ||
+                currentFilters.quranVerseRange.max !== 6236;
+              const hasQuranPlace =
+                currentFilters.quranPlaceOfRevelation.length > 0;
+              const hasQuranFilter =
+                hasQuranSurahs ||
+                verseRangeNarrowed ||
+                hasQuranPlace ||
+                currentFilters.quranSajdahOnly;
+
+              if (hasQuranFilter) {
+                let quranResults = processedQuranData;
+
+                if (hasQuranSurahs) {
+                  quranResults = quranResults.filter((result) => {
+                    const ayah = result.data as QuranAyah;
+                    return currentFilters.quranSurahs.includes(
+                      ayah.surah_no.toString(),
+                    );
+                  });
+                }
+
+                if (verseRangeNarrowed) {
+                  quranResults = quranResults.filter((result) => {
+                    const ayah = result.data as QuranAyah;
+                    const verseNumber = parseInt(
+                      ayah.ayah_no_surah.toString(),
+                    );
+                    return (
+                      verseNumber >= currentFilters.quranVerseRange.min &&
+                      verseNumber <= currentFilters.quranVerseRange.max
+                    );
+                  });
+                }
+
+                if (hasQuranPlace) {
+                  quranResults = quranResults.filter((result) => {
+                    const ayah = result.data as QuranAyah;
+                    return currentFilters.quranPlaceOfRevelation.includes(
+                      ayah.place_of_revelation,
+                    );
+                  });
+                }
+
+                if (currentFilters.quranSajdahOnly) {
+                  quranResults = quranResults.filter((result) => {
+                    const ayah = result.data as QuranAyah;
+                    return ayah.sajah_ayah === true;
+                  });
+                }
+
+                results.push(...quranResults);
+              }
+            }
+
+            // Process Hadith data: only include results when at least one filter is selected (default: no results)
             const hadithSelected = currentFilters.dataSources.some(
               (s) => String(s).toLowerCase().trim() === "hadith"
             );
             if (hadithSelected) {
-              let hadithResults = [...processedHadithData];
+              // Hadith: require at least one chapter (same idea as Quran requiring surah) so "no filter" = no results
+              const hasHadithCategories =
+                currentFilters.hadithCategories.length > 0;
 
-              // Hadith chapter filter (like quranSurahs for Quran)
-              if (currentFilters.hadithCategories.length > 0) {
+              if (hasHadithCategories) {
+                let hadithResults = [...processedHadithData];
+
                 hadithResults = hadithResults.filter((result) => {
                   const hadith = result.data as HadithEntry;
                   return (
                     hadith.chapter != null &&
-                    currentFilters.hadithCategories.includes(hadith.chapter)
+                    currentFilters.hadithCategories.includes(
+                      hadith.chapter,
+                    )
                   );
                 });
-              }
 
-              // Hadith number range: only when user narrowed from full range (use actual data min/max)
-              const hadithNums = processedHadithData
-                .map((r) => parseInt((r.data as HadithEntry).number, 10))
-                .filter((n) => !Number.isNaN(n));
-              const dataMin =
-                hadithNums.length > 0 ? Math.min(...hadithNums) : 1;
-              const dataMax =
-                hadithNums.length > 0 ? Math.max(...hadithNums) : 13143;
-              const rangeNarrowed =
-                currentFilters.hadithNumberRange.min > dataMin ||
-                currentFilters.hadithNumberRange.max < dataMax;
-              if (rangeNarrowed) {
-                hadithResults = hadithResults.filter((result) => {
-                  const hadith = result.data as HadithEntry;
-                  const n = parseInt(hadith.number, 10);
-                  if (Number.isNaN(n)) return true;
-                  return (
-                    n >= currentFilters.hadithNumberRange.min &&
-                    n <= currentFilters.hadithNumberRange.max
-                  );
-                });
-              }
+                // Optional: narrow by number range when user has changed from full range (use data min/max)
+                const hadithNums = processedHadithData
+                  .map((r) => parseInt((r.data as HadithEntry).number, 10))
+                  .filter((n) => !Number.isNaN(n));
+                const dataMin =
+                  hadithNums.length > 0 ? Math.min(...hadithNums) : 1;
+                const dataMax =
+                  hadithNums.length > 0 ? Math.max(...hadithNums) : 13143;
+                const hadithRangeNarrowed =
+                  currentFilters.hadithNumberRange.min > dataMin ||
+                  currentFilters.hadithNumberRange.max < dataMax;
+                if (hadithRangeNarrowed) {
+                  hadithResults = hadithResults.filter((result) => {
+                    const hadith = result.data as HadithEntry;
+                    const n = parseInt(hadith.number, 10);
+                    if (Number.isNaN(n)) return true;
+                    return (
+                      n >= currentFilters.hadithNumberRange.min &&
+                      n <= currentFilters.hadithNumberRange.max
+                    );
+                  });
+                }
 
-              results.push(...hadithResults);
+                results.push(...hadithResults);
+              }
             }
 
             // Defensive: only keep results whose type is in selected data sources (normalize for casing)
@@ -375,74 +495,6 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
                 return searchTerms.some((term) =>
                   searchableText.includes(term),
                 );
-              });
-            }
-
-            // Apply type filters (for Islamic data only)
-            if (currentFilters.types.length > 0) {
-              results = results.filter((result) => {
-                if (result.type === "islamic data") {
-                  const islamicData = result.data as IslamicData;
-                  return (
-                    islamicData.type &&
-                    currentFilters.types.includes(islamicData.type)
-                  );
-                }
-                return true; // Keep non-Islamic data results
-              });
-            }
-
-            // Apply fulfillment status filters (for Islamic data only)
-            if (currentFilters.fulfillmentStatus.length > 0) {
-              results = results.filter((result) => {
-                if (result.type === "islamic data") {
-                  const islamicData = result.data as IslamicData;
-                  return (
-                    islamicData.fulfillmentStatus &&
-                    currentFilters.fulfillmentStatus.includes(
-                      islamicData.fulfillmentStatus,
-                    )
-                  );
-                }
-                return true; // Keep non-Islamic data results
-              });
-            }
-
-            // Apply prophecy category filters (for Islamic data only)
-            if (currentFilters.prophecyCategories.length > 0) {
-              results = results.filter((result) => {
-                if (result.type === "islamic data") {
-                  const islamicData = result.data as IslamicData;
-                  return (
-                    islamicData.prophecyCategory &&
-                    currentFilters.prophecyCategories.includes(
-                      islamicData.prophecyCategory,
-                    )
-                  );
-                }
-                return true; // Keep non-Islamic data results
-              });
-            }
-
-            // Apply year range filters (for Islamic data only)
-            if (
-              currentFilters.yearRange.min > 0 ||
-              currentFilters.yearRange.max < 2024
-            ) {
-              results = results.filter((result) => {
-                if (result.type === "islamic data") {
-                  const islamicData = result.data as IslamicData;
-                  const yearRevealed = islamicData.yearRevealed || 0;
-                  const yearFulfilled = islamicData.yearFulfilled || 0;
-
-                  return (
-                    (yearRevealed >= currentFilters.yearRange.min &&
-                      yearRevealed <= currentFilters.yearRange.max) ||
-                    (yearFulfilled >= currentFilters.yearRange.min &&
-                      yearFulfilled <= currentFilters.yearRange.max)
-                  );
-                }
-                return true; // Keep non-Islamic data results
               });
             }
 
@@ -555,11 +607,19 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
         setSearchQuery(query);
       }, []);
 
-      // Handle filter changes - only update state, don't trigger search
-      const handleFiltersChange = useCallback((newFilters: FilterState) => {
-        filtersRef.current = newFilters;
-        setFilters(newFilters);
-      }, []);
+      // Handle filter changes - only update state, don't trigger search.
+      // Accept updater function so panel always applies changes to latest state (avoids stale closure when toggling multiple options quickly).
+      const handleFiltersChange = useCallback(
+        (updater: FilterState | ((prev: FilterState) => FilterState)) => {
+          setFilters((prev) => {
+            const next =
+              typeof updater === "function" ? updater(prev) : updater;
+            filtersRef.current = next;
+            return next;
+          });
+        },
+        []
+      );
 
       // Handle clear filters - only update state, don't trigger search
       const handleClearFilters = useCallback(() => {
@@ -574,7 +634,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
           fulfillmentStatus: [],
           prophecyCategories: [],
           yearRange: { min: 0, max: 2024 },
-          dataSources: ["islamic data", "quran", "hadith"],
+          dataSources: [], // Reset to nothing selected - user must select source(s) and filter(s)
           quranSurahs: [],
           quranVerseRange: { min: 1, max: 6236 },
           quranPlaceOfRevelation: [],
@@ -599,6 +659,111 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
         () => filteredResults.filter((r) => r.type === "hadith").length,
         [filteredResults],
       );
+
+      const quranSelectedWithoutFilter = useMemo(() => {
+        if (!hasSearched || !filters.dataSources.includes("quran"))
+          return false;
+        const hasFilter =
+          filters.quranSurahs.length > 0 ||
+          filters.quranVerseRange.min !== 1 ||
+          filters.quranVerseRange.max !== 6236 ||
+          filters.quranPlaceOfRevelation.length > 0 ||
+          filters.quranSajdahOnly;
+        return !hasFilter;
+      }, [
+        hasSearched,
+        filters.dataSources,
+        filters.quranSurahs.length,
+        filters.quranVerseRange.min,
+        filters.quranVerseRange.max,
+        filters.quranPlaceOfRevelation.length,
+        filters.quranSajdahOnly,
+      ]);
+
+      const islamicSelectedWithoutFilter = useMemo(() => {
+        if (!hasSearched || !filters.dataSources.includes("islamic data"))
+          return false;
+        const hasFilter =
+          filters.types.length > 0 ||
+          filters.fulfillmentStatus.length > 0 ||
+          filters.prophecyCategories.length > 0 ||
+          filters.yearRange.min > 0 ||
+          filters.yearRange.max < 2024;
+        return !hasFilter;
+      }, [
+        hasSearched,
+        filters.dataSources,
+        filters.types.length,
+        filters.fulfillmentStatus.length,
+        filters.prophecyCategories.length,
+        filters.yearRange.min,
+        filters.yearRange.max,
+      ]);
+
+      const hadithSelectedWithoutFilter = useMemo(() => {
+        if (!hasSearched) return false;
+        const hadithSelected = filters.dataSources.some(
+          (s) => String(s).toLowerCase().trim() === "hadith"
+        );
+        if (!hadithSelected) return false;
+        // Hadith: only chapter counts as "filter applied" (same as isSearchDisabled)
+        return filters.hadithCategories.length === 0;
+      }, [
+        hasSearched,
+        filters.dataSources,
+        filters.hadithCategories.length,
+      ]);
+
+      // Disable Confirm Search when no data sources or any selected source has no filter applied
+      const isSearchDisabled = useMemo(() => {
+        if (filters.dataSources.length === 0) return true;
+        const quranNoFilter =
+          filters.dataSources.includes("quran") &&
+          !(
+            filters.quranSurahs.length > 0 ||
+            filters.quranVerseRange.min !== 1 ||
+            filters.quranVerseRange.max !== 6236 ||
+            filters.quranPlaceOfRevelation.length > 0 ||
+            filters.quranSajdahOnly
+          );
+        const islamicNoFilter =
+          filters.dataSources.includes("islamic data") &&
+          !(
+            filters.types.length > 0 ||
+            filters.fulfillmentStatus.length > 0 ||
+            filters.prophecyCategories.length > 0 ||
+            filters.yearRange.min > 0 ||
+            filters.yearRange.max < 2024
+          );
+        const hadithSelected = filters.dataSources.some(
+          (s) => String(s).toLowerCase().trim() === "hadith"
+        );
+        // Hadith: only chapter counts as "filter applied" for button (number range uses data min/max and can falsely enable)
+        const hadithNoFilter =
+          hadithSelected && filters.hadithCategories.length === 0;
+        return quranNoFilter || islamicNoFilter || hadithNoFilter;
+      }, [
+        filters.dataSources,
+        filters.quranSurahs.length,
+        filters.quranVerseRange.min,
+        filters.quranVerseRange.max,
+        filters.quranPlaceOfRevelation.length,
+        filters.quranSajdahOnly,
+        filters.types.length,
+        filters.fulfillmentStatus.length,
+        filters.prophecyCategories.length,
+        filters.yearRange.min,
+        filters.yearRange.max,
+        filters.hadithCategories.length,
+      ]);
+
+      // When filters change and no valid selection remains (search would be disabled), clear results and return to "ready to search" state
+      useEffect(() => {
+        if (!hasSearched) return;
+        if (!isSearchDisabled) return;
+        setHasSearched(false);
+        setFilteredResults([]);
+      }, [isSearchDisabled, hasSearched]);
 
       // Memoized percentage calculation - based on filtered data count
       const percentageOfTotal = useMemo(() => {
@@ -665,7 +830,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
           <div className="flex justify-center gap-4">
             <button
               onClick={() => performSearch(searchQuery)}
-              disabled={isSearching || filters.dataSources.length === 0}
+              disabled={isSearching || isSearchDisabled}
               className="px-8 py-3 bg-green-600 hover:bg-green-700 disabled:bg-stone-400 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2"
             >
               {isSearching ? (
@@ -708,7 +873,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
                     fulfillmentStatus: [],
                     prophecyCategories: [],
                     yearRange: { min: 0, max: 2024 },
-                    dataSources: ["islamic data", "quran", "hadith"], // Default to all sources selected
+                    dataSources: [], // Reset to nothing selected
                     quranSurahs: [],
                     quranVerseRange: { min: 1, max: 6236 },
                     quranPlaceOfRevelation: [],
@@ -829,6 +994,30 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
             </div>
           ) : (
             <>
+              {(quranSelectedWithoutFilter ||
+                islamicSelectedWithoutFilter ||
+                hadithSelectedWithoutFilter) && (
+                <div
+                  role="alert"
+                  className="mb-4 space-y-2 p-4 rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200"
+                >
+                  {quranSelectedWithoutFilter && (
+                    <p className="font-medium">
+                      {t("search.quranSelectFilter")}
+                    </p>
+                  )}
+                  {islamicSelectedWithoutFilter && (
+                    <p className="font-medium">
+                      {t("search.islamicSelectFilter")}
+                    </p>
+                  )}
+                  {hadithSelectedWithoutFilter && (
+                    <p className="font-medium">
+                      {t("search.hadithSelectFilter")}
+                    </p>
+                  )}
+                </div>
+              )}
               <div ref={searchResultsRef}>
                 <SearchResults
                   results={filteredResults}

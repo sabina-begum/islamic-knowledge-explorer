@@ -14,7 +14,9 @@ interface AdvancedFilterPanelProps {
   quranData?: QuranAyah[];
   hadithData?: HadithEntry[];
   filters: FilterState;
-  onFiltersChange: (filters: FilterState) => void;
+  onFiltersChange: (
+    filters: FilterState | ((prev: FilterState) => FilterState)
+  ) => void;
   onClearFilters: () => void;
 }
 
@@ -189,32 +191,41 @@ export const AdvancedFilterPanel: React.FC<AdvancedFilterPanelProps> = ({
     return count;
   }, [filters, quranMinVerse, quranMaxVerse, hadithMinNumber, hadithMaxNumber]);
 
-  // Memoized event handlers to prevent unnecessary re-renders
+  // Memoized event handlers - use updater functions so changes apply to latest state (avoids stale closure when toggling multiple options).
   const handleFilterChange = useCallback(
     (key: keyof FilterState, value: FilterState[keyof FilterState]) => {
-      onFiltersChange({ ...filters, [key]: value });
+      onFiltersChange((prev) => ({ ...prev, [key]: value }));
     },
-    [filters, onFiltersChange]
+    [onFiltersChange]
   );
 
   const handleMultiSelectToggle = useCallback(
     (key: keyof FilterState, value: string) => {
-      const currentValues = filters[key] as string[];
-      const newValues = currentValues.includes(value)
-        ? currentValues.filter((v) => v !== value)
-        : [...currentValues, value];
-      handleFilterChange(key, newValues);
+      onFiltersChange((prev) => {
+        const currentValues = (prev[key] as string[]) ?? [];
+        const newValues = currentValues.includes(value)
+          ? currentValues.filter((v) => v !== value)
+          : [...currentValues, value];
+        return { ...prev, [key]: newValues };
+      });
     },
-    [filters, handleFilterChange]
+    [onFiltersChange]
   );
 
   const handleRangeChange = useCallback(
     (key: keyof FilterState, field: "min" | "max", value: number) => {
-      const currentRange = filters[key] as { min: number; max: number };
-      const newRange = { ...currentRange, [field]: value };
-      handleFilterChange(key, newRange);
+      onFiltersChange((prev) => {
+        const currentRange = (prev[key] as { min: number; max: number }) ?? {
+          min: 0,
+          max: 0,
+        };
+        return {
+          ...prev,
+          [key]: { ...currentRange, [field]: value },
+        };
+      });
     },
-    [filters, handleFilterChange]
+    [onFiltersChange]
   );
 
   // Memoized preset handlers
