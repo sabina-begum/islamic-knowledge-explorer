@@ -85,7 +85,7 @@ export const CategoryPieChart: React.FC<CategoryPieChartProps> = memo(
       : { top: 40, right: 80, bottom: 80, left: 80 };
 
     return (
-      <div className="w-full min-w-0 h-96 md:h-[28rem] bg-white dark:bg-stone-800 rounded-xl shadow-lg p-4 flex flex-col relative overflow-hidden">
+      <div className="w-full min-w-0 h-96 md:h-[28rem] bg-white dark:bg-stone-800 shadow-lg p-4 flex flex-col relative overflow-hidden">
         <h3 className="text-lg font-bold text-green-700 dark:text-green-400 mb-4 shrink-0">
           Featured Islamic Data Category Distribution
         </h3>

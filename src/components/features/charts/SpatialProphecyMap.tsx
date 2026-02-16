@@ -269,7 +269,7 @@ export const SpatialProphecyMap: React.FC<SpatialProphecyMapProps> = ({
   const activeLocations = locations.filter((location) => location.value > 0);
 
   return (
-    <div className="w-full bg-white dark:bg-stone-800 rounded-xl shadow-lg p-6">
+    <div className="w-full bg-white dark:bg-stone-800 shadow-lg p-6">
       <h3 className="text-lg font-bold text-green-700 dark:text-green-400 mb-6">
         Featured Geographic Data Distribution
       </h3>
