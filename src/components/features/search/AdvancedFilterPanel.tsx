@@ -110,20 +110,6 @@ export const AdvancedFilterPanel: React.FC<AdvancedFilterPanelProps> = ({
     [hadithNumbers]
   );
 
-  // Memoized static options to prevent recreation on every render
-  const searchFieldOptions = useMemo(
-    () => [
-      { value: "title", label: t("filter.title") },
-      { value: "description", label: t("filter.description") },
-      { value: "source", label: t("filter.source") },
-      { value: "category", label: t("filter.category") },
-      { value: "type", label: t("filter.type") },
-      { value: "fulfillmentStatus", label: t("filter.fulfillmentStatus") },
-      { value: "prophecyCategory", label: t("filter.prophecyCategory") },
-    ],
-    [t]
-  );
-
   const dataSourceOptions = useMemo(
     () => [
       { value: "islamic data", label: t("filter.islamicData") },
@@ -161,8 +147,6 @@ export const AdvancedFilterPanel: React.FC<AdvancedFilterPanelProps> = ({
     count += filters.types.length;
     // Islamic Data Filters: count each selected category
     count += filters.categories.length;
-    // Search Fields: count each selected field
-    count += filters.searchFields.length;
     // Islamic Data Filters: fulfillment status and prophecy category
     count += filters.fulfillmentStatus.length;
     count += filters.prophecyCategories.length;
@@ -394,8 +378,10 @@ export const AdvancedFilterPanel: React.FC<AdvancedFilterPanelProps> = ({
                   </div>
                 </div>
 
-                {/* Separator */}
-                <hr className="border-stone-300 dark:border-stone-600 my-6" />
+                {/* Separator - only when at least one source section is shown */}
+                {filters.dataSources.includes("quran") && (
+                  <hr className="border-stone-300 dark:border-stone-600 my-6" />
+                )}
 
                 {/* Quran-Specific Filters */}
                 {filters.dataSources.includes("quran") && (
@@ -578,8 +564,10 @@ export const AdvancedFilterPanel: React.FC<AdvancedFilterPanelProps> = ({
                   </div>
                 )}
 
-                {/* Separator */}
-                <hr className="border-stone-300 dark:border-stone-600 my-6" />
+                {/* Separator - only when Hadith section is shown */}
+                {filters.dataSources.includes("hadith") && (
+                  <hr className="border-stone-300 dark:border-stone-600 my-6" />
+                )}
 
                 {/* Hadith-Specific Filters */}
                 {filters.dataSources.includes("hadith") && (
@@ -674,8 +662,10 @@ export const AdvancedFilterPanel: React.FC<AdvancedFilterPanelProps> = ({
                   </div>
                 )}
 
-                {/* Separator */}
-                <hr className="border-stone-300 dark:border-stone-600 my-6" />
+                {/* Separator - only when Islamic Data section is shown */}
+                {filters.dataSources.includes("islamic data") && (
+                  <hr className="border-stone-300 dark:border-stone-600 my-6" />
+                )}
 
                 {/* Islamic Data Filters */}
                 {filters.dataSources.includes("islamic data") && (
@@ -822,58 +812,32 @@ export const AdvancedFilterPanel: React.FC<AdvancedFilterPanelProps> = ({
                   </div>
                 )}
 
-                {/* Separator */}
-                <hr className="border-stone-300 dark:border-stone-600 my-6" />
+                {/* Separator - only when Sort by is shown (Featured Islamic selected) */}
+                {filters.dataSources.includes("islamic data") && (
+                  <hr className="border-stone-300 dark:border-stone-600 my-6" />
+                )}
 
-                {/* Search Fields Filter */}
-                <div>
-                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-2 block">
-                    {t("filter.searchFields")}
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {searchFieldOptions.map((option) => (
-                      <label
-                        key={option.value}
-                        className="flex items-center space-x-2 cursor-pointer"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={filters.searchFields.includes(option.value)}
-                          onChange={() =>
-                            handleMultiSelectToggle(
-                              "searchFields",
-                              option.value
-                            )
-                          }
-                          className="rounded border-stone-300 text-green-600 focus:ring-green-500"
-                        />
-                        <span className="text-sm text-stone-600 dark:text-stone-400">
+                {/* Sort Options - only for Featured Islamic Sources (options are Islamic-specific) */}
+                {filters.dataSources.includes("islamic data") && (
+                  <div>
+                    <label className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-2 block">
+                      {t("search.sort")} {t("filter.by")}
+                    </label>
+                    <select
+                      value={filters.sortBy}
+                      onChange={(e) =>
+                        handleFilterChange("sortBy", e.target.value)
+                      }
+                      className="w-full px-3 py-2 text-sm border border-stone-300 dark:border-stone-600 rounded bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    >
+                      {sortOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
                           {option.label}
-                        </span>
-                      </label>
-                    ))}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                </div>
-
-                {/* Sort Options */}
-                <div>
-                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-2 block">
-                    {t("search.sort")} {t("filter.by")}
-                  </label>
-                  <select
-                    value={filters.sortBy}
-                    onChange={(e) =>
-                      handleFilterChange("sortBy", e.target.value)
-                    }
-                    className="w-full px-3 py-2 text-sm border border-stone-300 dark:border-stone-600 rounded bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
-                  >
-                    {sortOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                )}
 
                 {/* Preset Management */}
                 <div className="border-t border-stone-200 dark:border-stone-700 pt-4">
