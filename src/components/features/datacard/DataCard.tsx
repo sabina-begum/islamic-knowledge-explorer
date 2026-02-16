@@ -8,6 +8,14 @@ interface DataCardProps {
   isFavorite: boolean;
 }
 
+/** Title-case for display (e.g. "supported by evidence" → "Supported By Evidence", "in-progress" → "In Progress"). */
+function toTitleCase(s: string): string {
+  if (!s) return s;
+  return s
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 // Memoized DataCard component for better performance
 export const DataCard: React.FC<DataCardProps> = memo(
   ({ card, onFavorite, isFavorite }) => {
@@ -37,7 +45,7 @@ export const DataCard: React.FC<DataCardProps> = memo(
                   : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
               }`}
             >
-              {card.type}
+              {card.type.charAt(0).toUpperCase() + card.type.slice(1)}
             </span>
             <button
               onClick={handleFavoriteClick}
@@ -83,20 +91,17 @@ export const DataCard: React.FC<DataCardProps> = memo(
             </p>
           </div>
 
-          {/* Status Information */}
-          {card.status && (
+          {/* Status / Fulfillment - single block, one or the other */}
+          {(card.status || card.fulfillmentStatus) && (
             <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800 mb-4">
-              <h4 className="text-xs font-semibold text-orange-700 dark:text-orange-300 mb-2 uppercase tracking-wide">
-                Status
+              <h4 className="text-xs font-semibold text-orange-700 dark:text-orange-300 mb-2">
+                {card.fulfillmentStatus ? "Fulfillment" : "Status"}
               </h4>
               <div className="space-y-2 text-sm">
                 {/* Show Status OR Fulfillment, not both */}
                 {!card.fulfillmentStatus ? (
-                  // Show regular status for non-prophetic cards
+                  // Show regular status for non-prophetic cards (heading "Status" above, no duplicate label)
                   <div className="flex items-center gap-2">
-                    <span className="text-orange-600 dark:text-orange-400">
-                      Status:
-                    </span>
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${
                         card.status === "Fulfilled Prophecy"
@@ -114,15 +119,12 @@ export const DataCard: React.FC<DataCardProps> = memo(
                           : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                       }`}
                     >
-                      {card.status}
+                      {toTitleCase(card.status)}
                     </span>
                   </div>
                 ) : (
-                  // Show fulfillment status for prophetic cards
+                  // Show fulfillment status for prophetic cards (no duplicate label)
                   <div className="flex items-center gap-2">
-                    <span className="text-orange-600 dark:text-orange-400">
-                      Fulfillment:
-                    </span>
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${
                         card.fulfillmentStatus === "fulfilled"
@@ -134,7 +136,7 @@ export const DataCard: React.FC<DataCardProps> = memo(
                           : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                       }`}
                     >
-                      {card.fulfillmentStatus}
+                      {toTitleCase(card.fulfillmentStatus)}
                     </span>
                   </div>
                 )}
@@ -171,7 +173,7 @@ export const DataCard: React.FC<DataCardProps> = memo(
           {/* Sources Information */}
           {card.sources && (
             <div className="p-3 bg-stone-50 dark:bg-stone-700 rounded-lg border border-stone-200 dark:border-stone-600">
-              <h4 className="text-xs font-semibold text-stone-700 dark:text-stone-300 mb-2 uppercase tracking-wide">
+              <h4 className="text-xs font-semibold text-stone-700 dark:text-stone-300 mb-2">
                 Sources
               </h4>
               <div className="space-y-2 text-xs">

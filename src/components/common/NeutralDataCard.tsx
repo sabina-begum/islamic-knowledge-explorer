@@ -20,7 +20,9 @@ export const NeutralDataCard: React.FC<NeutralDataCardProps> = memo(
       onFavorite(card);
     };
 
-    // Neutral status presentation
+    // Neutral status presentation (title-case for display)
+    const toTitleCase = (s: string) =>
+      s ? s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : s;
     const getStatusDisplay = (status: string) => {
       switch (status?.toLowerCase()) {
         case "fulfilled":
@@ -32,7 +34,7 @@ export const NeutralDataCard: React.FC<NeutralDataCardProps> = memo(
         case "in-progress":
           return "Ongoing";
         default:
-          return status || "Not Specified";
+          return status ? toTitleCase(status) : "Not Specified";
       }
     };
 
@@ -54,7 +56,7 @@ export const NeutralDataCard: React.FC<NeutralDataCardProps> = memo(
                   : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
               }`}
             >
-              {card.type}
+              {card.type.charAt(0).toUpperCase() + card.type.slice(1)}
             </span>
             <button
               onClick={handleFavoriteClick}
@@ -103,7 +105,7 @@ export const NeutralDataCard: React.FC<NeutralDataCardProps> = memo(
           {/* Status Information - Neutral presentation */}
           {card.status && (
             <div className="p-3 bg-stone-50 dark:bg-stone-700 rounded-lg border border-stone-200 dark:border-stone-600 mb-4">
-              <h4 className="text-xs font-semibold text-stone-700 dark:text-stone-300 mb-2 uppercase tracking-wide">
+              <h4 className="text-xs font-semibold text-stone-700 dark:text-stone-300 mb-2">
                 Status
               </h4>
               <div className="space-y-2 text-sm">
