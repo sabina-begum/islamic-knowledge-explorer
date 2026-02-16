@@ -303,21 +303,43 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
               results.push(...quranResults);
             }
 
-            // Process Hadith data with enhanced filtering
-            if (currentFilters.dataSources.includes("hadith")) {
-              let hadithResults = processedHadithData;
+            // Process Hadith data (mirror Quran/Islamic: apply only explicit filters)
+            const hadithSelected = currentFilters.dataSources.some(
+              (s) => String(s).toLowerCase().trim() === "hadith"
+            );
+            if (hadithSelected) {
+              let hadithResults = [...processedHadithData];
 
-              if (
-                currentFilters.hadithNumberRange.min !== 1 ||
-                currentFilters.hadithNumberRange.max !== hadithData.length
-              ) {
+              // Hadith chapter filter (like quranSurahs for Quran)
+              if (currentFilters.hadithCategories.length > 0) {
                 hadithResults = hadithResults.filter((result) => {
                   const hadith = result.data as HadithEntry;
-                  const hadithNumber = parseInt(hadith.number, 10);
-                  if (Number.isNaN(hadithNumber)) return true;
                   return (
-                    hadithNumber >= currentFilters.hadithNumberRange.min &&
-                    hadithNumber <= currentFilters.hadithNumberRange.max
+                    hadith.chapter != null &&
+                    currentFilters.hadithCategories.includes(hadith.chapter)
+                  );
+                });
+              }
+
+              // Hadith number range: only when user narrowed from full range (use actual data min/max)
+              const hadithNums = processedHadithData
+                .map((r) => parseInt((r.data as HadithEntry).number, 10))
+                .filter((n) => !Number.isNaN(n));
+              const dataMin =
+                hadithNums.length > 0 ? Math.min(...hadithNums) : 1;
+              const dataMax =
+                hadithNums.length > 0 ? Math.max(...hadithNums) : 13143;
+              const rangeNarrowed =
+                currentFilters.hadithNumberRange.min > dataMin ||
+                currentFilters.hadithNumberRange.max < dataMax;
+              if (rangeNarrowed) {
+                hadithResults = hadithResults.filter((result) => {
+                  const hadith = result.data as HadithEntry;
+                  const n = parseInt(hadith.number, 10);
+                  if (Number.isNaN(n)) return true;
+                  return (
+                    n >= currentFilters.hadithNumberRange.min &&
+                    n <= currentFilters.hadithNumberRange.max
                   );
                 });
               }
@@ -325,9 +347,14 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
               results.push(...hadithResults);
             }
 
-            // Defensive: only keep results whose type is in selected data sources
+            // Defensive: only keep results whose type is in selected data sources (normalize for casing)
+            const sourceSet = new Set(
+              currentFilters.dataSources.map((s) =>
+                String(s).toLowerCase().trim()
+              )
+            );
             results = results.filter((result) =>
-              currentFilters.dataSources.includes(result.type),
+              sourceSet.has(result.type.toLowerCase()),
             );
 
             // Apply search query with enhanced field coverage
@@ -530,6 +557,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
 
       // Handle filter changes - only update state, don't trigger search
       const handleFiltersChange = useCallback((newFilters: FilterState) => {
+        filtersRef.current = newFilters;
         setFilters(newFilters);
       }, []);
 

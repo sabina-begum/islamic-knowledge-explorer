@@ -16,7 +16,7 @@ import { useFavorites } from "../hooks/useFavorites";
 import { useQuranData } from "../hooks/useQuranData";
 import { useHadithData } from "../hooks/useHadithData";
 import { useSanitizedData } from "../hooks/useSanitizedData";
-import type { IslamicData, IslamicDataFilters } from "../types/Types";
+import type { IslamicData, IslamicDataFilters, HadithEntry } from "../types/Types";
 import type { FavoriteItem } from "../hooks/useFavorites";
 import type { Dispatch, SetStateAction } from "react";
 import Masonry from "react-masonry-css";
@@ -198,8 +198,10 @@ export default function HomePage({
     } else if ("surah_no" in item && "ayah_no_surah" in item) {
       // QuranAyah
       return `quran-${item.surah_no}-${item.ayah_no_surah}`;
+    } else if ("number" in item && "id" in item) {
+      const id = (item as HadithEntry).id;
+      return typeof id === "string" && id.startsWith("hadith-") ? id : `hadith-${id}`;
     } else if ("number" in item) {
-      // HadithEntry
       return `hadith-${item.number}`;
     }
     return `unknown-${JSON.stringify(item)}`;

@@ -29,8 +29,11 @@ const getItemId = (item: FavoriteItem): string => {
   } else if ("surah_no" in item && "ayah_no_surah" in item) {
     // QuranAyah
     return `quran-${item.surah_no}-${item.ayah_no_surah}`;
+  } else if ("number" in item && "id" in item) {
+    // HadithEntry: use id so each hadith is unique (number can repeat)
+    const id = (item as HadithEntry).id;
+    return typeof id === "string" && id.startsWith("hadith-") ? id : `hadith-${id}`;
   } else if ("number" in item) {
-    // HadithEntry
     return `hadith-${item.number}`;
   }
   return `unknown-${JSON.stringify(item)}`;
