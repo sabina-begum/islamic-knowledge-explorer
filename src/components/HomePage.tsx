@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, Suspense } from "react";
+import React, { useEffect, useState, useRef, Suspense, useMemo } from "react";
 import {
   LazyAdvancedSearchDashboard,
   LazyChartsDashboard,
@@ -22,6 +22,7 @@ import type { Dispatch, SetStateAction } from "react";
 import Masonry from "react-masonry-css";
 
 import { scrollToTop } from "../utils/scrollUtils";
+import { getDailyReflectionVerse } from "../data/dailyReflectionVerses";
 import { HomePageStats } from "./home/HomePageStats";
 import { HomePageTabs } from "./home/HomePageTabs";
 import { HomePageHeader } from "./home/HomePageHeader";
@@ -47,6 +48,29 @@ interface HomePageProps {
   cardsListRef: React.RefObject<HTMLDivElement>;
   activeTab: string;
   setActiveTab: (tab: string) => void;
+}
+
+/** One Quran verse per day (local date), same for the whole day. */
+function ReflectionsBlock() {
+  const now = new Date();
+  const dayKey = now.getFullYear() * 10000 + now.getMonth() * 100 + now.getDate();
+  const verse = useMemo(
+    () => getDailyReflectionVerse(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- verse should update when local date changes
+    [dayKey]
+  );
+  return (
+    <>
+      <h2 className="text-2xl font-bold text-green-700 dark:text-green-400 mb-2">
+        Reflections
+      </h2>
+      <p className="text-stone-600 dark:text-stone-400 max-w-2xl leading-relaxed">
+        <em>&ldquo;{verse.text}&rdquo;</em>
+        <br />
+        ({verse.reference})
+      </p>
+    </>
+  );
 }
 
 export default function HomePage({
@@ -202,7 +226,7 @@ export default function HomePage({
       const id = (item as HadithEntry).id;
       return typeof id === "string" && id.startsWith("hadith-") ? id : `hadith-${id}`;
     } else if ("number" in item) {
-      return `hadith-${item.number}`;
+      return `hadith-${(item as HadithEntry).number}`;
     }
     return `unknown-${JSON.stringify(item)}`;
   };
@@ -254,25 +278,7 @@ export default function HomePage({
                 {/* Filters and Export */}
                 <div className="space-y-4 mb-6">
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-green-700 dark:text-green-400 mb-2">
-                      Reflections
-                    </h2>
-                    <p className="text-stone-600 dark:text-stone-400 max-w-2xl leading-relaxed">
-                      <em>
-                        {" "}
-                        "Read! In the name of your Lord who created. He created
-                        man from a clot. Read! And your Lord is the Most
-                        Generous, Who taught by the pen. He taught man that
-                        which he knew not."{" "}
-                      </em>
-                      <br />
-                      (Quran 96:1-5)
-                      <br />
-                      <br />
-                      <em> "Do they not contemplate within themselves?" </em>
-                      <br />
-                      (Quran 30:8)
-                    </p>
+                    <ReflectionsBlock />
                   </div>
                 </div>
                 <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
