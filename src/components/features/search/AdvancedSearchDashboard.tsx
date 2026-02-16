@@ -905,7 +905,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
           {/* Search Results - Only show if user has searched */}
           {!hasSearched ? (
             <div
-              className="py-12 dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 relative overflow-hidden"
+              className="py-12 px-5 sm:px-6 dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 relative overflow-hidden"
               style={{
                 backgroundImage: `url(${mediaBackground})`,
                 backgroundSize: "cover",
