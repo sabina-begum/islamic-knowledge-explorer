@@ -918,7 +918,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
               <div className="absolute inset-0 bg-neutral-500/50 dark:bg-neutral-800/50"></div>
               <div className="max-w-md mx-auto text-left relative z-10">
                 <h3
-                  className="text-lg font-semibold mb-2 search-ready-title flex items-center gap-2"
+                  className="text-2xl sm:text-3xl font-semibold mb-3 search-ready-title flex items-center gap-2"
                   style={{
                     color: "#EDEADE",
                     textShadow: "0 3px 6px rgba(0, 0, 0, 0.9)",
@@ -943,7 +943,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
                   </svg>
                 </h3>
                 <p
-                  className="mb-4 search-ready-description"
+                  className="mb-4 text-base search-ready-description"
                   style={{
                     color: "#fffdd0",
                     textShadow: "0 3px 6px rgba(0, 0, 0, 0.9)",
