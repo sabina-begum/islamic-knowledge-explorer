@@ -282,16 +282,32 @@ export default function HomePage({
                   </div>
                 </div>
                 <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <input
-                      type="text"
-                      placeholder={t("search.placeholder")}
-                      value={filters.searchTerm}
-                      onChange={(e) =>
-                        setFilters({ ...filters, searchTerm: e.target.value })
-                      }
-                      className="px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    />
+                  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <form
+                      onSubmit={(e) => e.preventDefault()}
+                      className="flex flex-1 sm:flex-initial min-w-0"
+                    >
+                      <div className="flex items-stretch rounded-xl overflow-hidden border border-stone-300 dark:border-stone-600 focus-within:ring-2 focus-within:ring-green-500 focus-within:border-transparent">
+                        <input
+                          type="text"
+                          placeholder={t("search.placeholder")}
+                          value={filters.searchTerm}
+                          onChange={(e) =>
+                            setFilters({
+                              ...filters,
+                              searchTerm: e.target.value,
+                            })
+                          }
+                          className="flex-1 min-w-0 px-3 py-2 rounded-l-xl sm:rounded-r-none border-0 bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-0 focus:outline-none"
+                        />
+                        <button
+                          type="submit"
+                          className="px-3 sm:px-4 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors text-sm font-medium min-h-[44px] sm:min-h-0 flex items-center justify-center whitespace-nowrap"
+                        >
+                          {t("common.search")}
+                        </button>
+                      </div>
+                    </form>
                     <select
                       value={filters.type}
                       onChange={(e) =>

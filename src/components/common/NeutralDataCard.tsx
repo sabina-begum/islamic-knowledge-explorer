@@ -60,7 +60,7 @@ export const NeutralDataCard: React.FC<NeutralDataCardProps> = memo(
             </span>
             <button
               onClick={handleFavoriteClick}
-              className={`p-2 rounded-full transition-all duration-200 ${
+              className={`flex-shrink-0 p-2 rounded-full transition-all duration-200 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 inline-flex items-center justify-center ${
                 isFavorite
                   ? "bg-yellow-100 hover:bg-yellow-200 text-yellow-600 hover:text-yellow-700"
                   : "text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700"

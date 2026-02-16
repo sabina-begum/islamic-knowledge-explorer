@@ -142,71 +142,102 @@ export function QuranDashboard({
         </p>
       </div>
 
-      {/* Filters */}
+      {/* Filters - layout consistent with Hadith tab */}
       <div className="bg-white dark:bg-stone-800 rounded-xl p-6 shadow-lg border border-stone-200 dark:border-stone-700">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          {/* Search */}
-          <form onSubmit={handleSearch} className="sm:col-span-2 lg:col-span-2">
-            <div className="flex">
-              <input
-                type="text"
-                placeholder="Search by surah name or Arabic text..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 px-3 sm:px-4 py-2 border border-stone-300 dark:border-stone-600 rounded-l-lg bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
-              />
-              <button
-                type="submit"
-                className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded-r-lg hover:bg-green-700 transition-colors text-sm sm:text-base"
+          {/* Search - same pattern as Hadith: label + input row, touch-friendly button */}
+          <form onSubmit={handleSearch} className="sm:col-span-2 lg:col-span-2 w-full">
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor="quran-search"
+                className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 font-medium"
               >
-                Search
-              </button>
+                Search:
+              </label>
+              <div className="flex items-stretch">
+                <input
+                  id="quran-search"
+                  type="text"
+                  placeholder="Search by surah name or Arabic text..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="min-w-0 flex-1 px-3 sm:px-4 py-2 border border-stone-300 dark:border-stone-600 rounded-l-lg rounded-r-none border-r-0 bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
+                />
+                <button
+                  type="submit"
+                  className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded-r-lg hover:bg-green-700 transition-colors text-sm sm:text-base font-medium border border-l-0 border-stone-300 dark:border-stone-600 flex items-center justify-center min-w-fit whitespace-nowrap min-h-[44px] sm:min-h-0"
+                >
+                  Search
+                </button>
+              </div>
             </div>
           </form>
 
           {/* Surah Filter */}
-          <select
-            value={filters.surah || ""}
-            onChange={handleSurahChange}
-            className="px-3 sm:px-4 py-2 border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
-          >
-            <option value="">All Surahs</option>
-            {uniqueSurahs.map((surah) => (
-              <option key={surah.number} value={surah.number}>
-                {surah.number}. {surah.name}
-              </option>
-            ))}
-          </select>
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="quran-surah"
+              className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 font-medium"
+            >
+              Surah:
+            </label>
+            <select
+              id="quran-surah"
+              value={filters.surah || ""}
+              onChange={handleSurahChange}
+              className="w-full px-3 sm:px-4 py-2 min-h-[44px] sm:min-h-0 border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
+            >
+              <option value="">All Surahs</option>
+              {uniqueSurahs.map((surah) => (
+                <option key={surah.number} value={surah.number}>
+                  {surah.number}. {surah.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
           {/* Place of Revelation Filter */}
-          <select
-            value={filters.placeOfRevelation || ""}
-            onChange={handlePlaceChange}
-            className="px-3 sm:px-4 py-2 border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
-          >
-            <option value="">All Places</option>
-            {uniquePlaces.map((place) => (
-              <option key={place} value={place}>
-                {place}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="quran-place"
+              className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 font-medium"
+            >
+              Place:
+            </label>
+            <select
+              id="quran-place"
+              value={filters.placeOfRevelation || ""}
+              onChange={handlePlaceChange}
+              className="w-full px-3 sm:px-4 py-2 min-h-[44px] sm:min-h-0 border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
+            >
+              <option value="">All Places</option>
+              {uniquePlaces.map((place) => (
+                <option key={place} value={place}>
+                  {place}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Sort Options */}
-        <div className="mt-4 flex items-center space-x-4">
-          <span className="text-sm text-stone-600 dark:text-stone-400">
-            Sort by:
-          </span>
-          <select
-            value={filters.sortBy}
-            onChange={handleSortChange}
-            className="px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
-          >
-            <option value="surah_no">Surah Number</option>
-            <option value="surah_name_en">Surah Name</option>
-            <option value="place_of_revelation">Place of Revelation</option>
-          </select>
+          {/* Sort - same grid cell pattern as Hadith */}
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="quran-sort"
+              className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 font-medium"
+            >
+              Sort by:
+            </label>
+            <select
+              id="quran-sort"
+              value={filters.sortBy}
+              onChange={handleSortChange}
+              className="w-full px-3 sm:px-4 py-2 min-h-[44px] sm:min-h-0 border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
+            >
+              <option value="surah_no">Surah Number</option>
+              <option value="surah_name_en">Surah Name</option>
+              <option value="place_of_revelation">Place of Revelation</option>
+            </select>
+          </div>
         </div>
       </div>
 

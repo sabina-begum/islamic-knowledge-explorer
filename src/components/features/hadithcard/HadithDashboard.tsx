@@ -141,7 +141,7 @@ export function HadithDashboard({
                 </div>
                 <button
                   type="submit"
-                  className="px-3 sm:px-4 py-2 bg-stone-500 dark:bg-purple-700 text-white rounded-r-lg hover:bg-purple-700 dark:hover:bg-purple-800 transition-colors text-sm sm:text-base font-medium border border-l-0 border-stone-300 dark:border-stone-600 flex items-center justify-center min-w-fit whitespace-nowrap"
+                  className="px-3 sm:px-4 py-2 bg-stone-500 dark:bg-purple-700 text-white rounded-r-lg hover:bg-purple-700 dark:hover:bg-purple-800 transition-colors text-sm sm:text-base font-medium border border-l-0 border-stone-300 dark:border-stone-600 flex items-center justify-center min-w-fit whitespace-nowrap min-h-[44px] sm:min-h-0"
                 >
                   Search
                 </button>
@@ -162,7 +162,7 @@ export function HadithDashboard({
               name="hadith-chapter"
               value={filters.chapter || "all"}
               onChange={handleChapterChange}
-              className="w-full px-3 sm:px-4 py-2 border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-stone-500 focus:border-transparent text-sm sm:text-base"
+              className="w-full px-3 sm:px-4 py-2 min-h-[44px] sm:min-h-0 border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-stone-500 focus:border-transparent text-sm sm:text-base"
             >
               <option value="all">All Chapters</option>
               {uniqueChapters.map((chapter) => (
@@ -186,7 +186,7 @@ export function HadithDashboard({
               name="hadith-sort"
               value={filters.sortBy}
               onChange={handleSortChange}
-              className="w-full px-3 sm:px-4 py-2 border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-stone-500 focus:border-transparent text-sm sm:text-base"
+              className="w-full px-3 sm:px-4 py-2 min-h-[44px] sm:min-h-0 border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-stone-500 focus:border-transparent text-sm sm:text-base"
             >
               <option value="index">Original Order</option>
               <option value="length">Length (Longest First)</option>
