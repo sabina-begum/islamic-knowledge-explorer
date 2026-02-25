@@ -15,28 +15,28 @@ import { monitorCSSPerformance } from "./utils/cssLoader";
 const HomePageWrapper = lazy(() =>
   import("./components/HomePageWrapper").then((module) => ({
     default: module.default,
-  }))
+  })),
 );
 const FavoritesPage = lazy(() =>
-  import("./pages/Favorites").then((module) => ({ default: module.default }))
+  import("./pages/Favorites").then((module) => ({ default: module.default })),
 );
 const ProfilePage = lazy(() =>
-  import("./pages/Profile").then((module) => ({ default: module.default }))
+  import("./pages/Profile").then((module) => ({ default: module.default })),
 );
 const LoginPage = lazy(() =>
-  import("./pages/Login").then((module) => ({ default: module.default }))
+  import("./pages/Login").then((module) => ({ default: module.default })),
 );
 const CopyrightPage = lazy(() =>
-  import("./pages/Copyright").then((module) => ({ default: module.default }))
+  import("./pages/Copyright").then((module) => ({ default: module.default })),
 );
 const TermsPage = lazy(() =>
-  import("./pages/Terms").then((module) => ({ default: module.default }))
+  import("./pages/Terms").then((module) => ({ default: module.default })),
 );
 const PrivacyPage = lazy(() =>
-  import("./pages/Privacy").then((module) => ({ default: module.default }))
+  import("./pages/Privacy").then((module) => ({ default: module.default })),
 );
 const InstallAppPage = lazy(() =>
-  import("./pages/InstallApp").then((module) => ({ default: module.default }))
+  import("./pages/InstallApp").then((module) => ({ default: module.default })),
 );
 
 // Full-page loader: matches index.html placeholder exactly (parent provides background)
@@ -186,14 +186,70 @@ function App() {
             >
               <Suspense fallback={<PageLoader />}>
                 <Routes>
-                  <Route path="/" element={<AppReadyGate><HomePageWrapper /></AppReadyGate>} />
-                  <Route path="/favorites" element={<AppReadyGate><FavoritesPage /></AppReadyGate>} />
-                  <Route path="/profile" element={<AppReadyGate><ProfilePage /></AppReadyGate>} />
-                  <Route path="/login" element={<AppReadyGate><LoginPage /></AppReadyGate>} />
-                  <Route path="/install" element={<AppReadyGate><InstallAppPage /></AppReadyGate>} />
-                  <Route path="/copyright" element={<AppReadyGate><CopyrightPage /></AppReadyGate>} />
-                  <Route path="/terms" element={<AppReadyGate><TermsPage /></AppReadyGate>} />
-                  <Route path="/privacy" element={<AppReadyGate><PrivacyPage /></AppReadyGate>} />
+                  <Route
+                    path="/"
+                    element={
+                      <AppReadyGate>
+                        <HomePageWrapper />
+                      </AppReadyGate>
+                    }
+                  />
+                  <Route
+                    path="/favorites"
+                    element={
+                      <AppReadyGate>
+                        <FavoritesPage />
+                      </AppReadyGate>
+                    }
+                  />
+                  <Route
+                    path="/profile"
+                    element={
+                      <AppReadyGate>
+                        <ProfilePage />
+                      </AppReadyGate>
+                    }
+                  />
+                  <Route
+                    path="/login"
+                    element={
+                      <AppReadyGate>
+                        <LoginPage />
+                      </AppReadyGate>
+                    }
+                  />
+                  <Route
+                    path="/install"
+                    element={
+                      <AppReadyGate>
+                        <InstallAppPage />
+                      </AppReadyGate>
+                    }
+                  />
+                  <Route
+                    path="/copyright"
+                    element={
+                      <AppReadyGate>
+                        <CopyrightPage />
+                      </AppReadyGate>
+                    }
+                  />
+                  <Route
+                    path="/terms"
+                    element={
+                      <AppReadyGate>
+                        <TermsPage />
+                      </AppReadyGate>
+                    }
+                  />
+                  <Route
+                    path="/privacy"
+                    element={
+                      <AppReadyGate>
+                        <PrivacyPage />
+                      </AppReadyGate>
+                    }
+                  />
                 </Routes>
               </Suspense>
             </main>

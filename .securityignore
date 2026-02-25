@@ -12,3 +12,11 @@ d3-scale-chromatic@*:acceptable-risk
 
 # Firebase vulnerabilities (handled by Google)
 undici@*:firebase-managed
+
+# Dev-only lint tooling (minimatch ReDoS via @typescript-eslint/*)
+minimatch@9.*:dev-tooling-only
+@typescript-eslint/eslint-plugin@*:dev-tooling-only
+@typescript-eslint/parser@*:dev-tooling-only
+@typescript-eslint/utils@*:dev-tooling-only
+@typescript-eslint/type-utils@*:dev-tooling-only
+@typescript-eslint/typescript-estree@*:dev-tooling-only
