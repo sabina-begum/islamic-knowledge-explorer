@@ -24,64 +24,50 @@ export function sanitizeInput(input: string): string {
     return "";
   }
 
-  let sanitized = input
-    // Remove HTML tags and their content
-    .replace(/<[^>]*>/g, "")
-    // Remove script tags and their content (handles whitespace in closing tags)
-    .replace(/<script[^>]*>[\s\S]*?<\/script\s*>/gi, "")
-    // Remove javascript: protocol
-    .replace(/javascript:/gi, "")
-    // Remove vbscript: protocol
-    .replace(/vbscript:/gi, "")
-    // Remove data: protocol
-    .replace(/data:/gi, "")
-    // Remove all event handlers (onXXX=)
-    .replace(/on\w+\s*=/gi, "")
-    // Remove CSS expressions
-    .replace(/expression\s*\(/gi, "")
-    // Remove eval() calls
-    .replace(/eval\s*\(/gi, "")
-    // Remove dangerous CSS properties
-    .replace(/url\s*\(/gi, "")
-    // Remove potential SQL injection patterns
-    .replace(/['";]/g, "")
-    // Remove backticks (can be used for template injection)
-    .replace(/`/g, "")
-    // Remove angle brackets
-    .replace(/[<>]/g, "")
-    // Remove ampersands (can be used for HTML entity injection)
-    .replace(/&/g, "&amp;")
-    // Remove quotes
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;")
-    // Remove backslashes
-    .replace(/\\/g, "")
-    // Remove null bytes
-    .replace(/\0/g, "")
-    // Normalize whitespace
-    .replace(/\s+/g, " ")
-    .trim();
+  // Normalize whitespace early
+  let sanitized = input.replace(/\s+/g, " ").trim();
 
-  // Remove control characters
-  sanitized = removeControlCharacters(sanitized);
-
-  // Additional check for any remaining dangerous patterns
+  // Strip dangerous protocols and constructs (multi‑char patterns)
   const dangerousPatterns = [
-    /<script/gi,
     /javascript:/gi,
     /vbscript:/gi,
     /data:/gi,
     /on\w+\s*=/gi,
     /expression\s*\(/gi,
     /eval\s*\(/gi,
+    /url\s*\(/gi,
   ];
 
-  // If any dangerous patterns remain, remove them completely
   dangerousPatterns.forEach((pattern) => {
-    if (pattern.test(sanitized)) {
+    // Ensure we remove *all* occurrences, not just the first
+    pattern.lastIndex = 0;
+    while (pattern.test(sanitized)) {
       sanitized = sanitized.replace(pattern, "");
+      pattern.lastIndex = 0;
     }
   });
+
+  // Encode/strip characters that can open XSS vectors in attributes
+  sanitized = sanitized
+    // Escape ampersands first
+    .replace(/&/g, "&amp;")
+    // Escape quotes
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;")
+    // Remove angle brackets entirely (no tags)
+    .replace(/[<>]/g, "")
+    // Remove backticks
+    .replace(/`/g, "")
+    // Remove backslashes
+    .replace(/\\/g, "")
+    // Remove null bytes
+    .replace(/\0/g, "")
+    // Normalize whitespace again
+    .replace(/\s+/g, " ")
+    .trim();
+
+  // Remove control characters
+  sanitized = removeControlCharacters(sanitized);
 
   return sanitized;
 }
@@ -150,7 +136,7 @@ export function isValidIslamicText(input: string): boolean {
   for (let i = 0; i < input.length; i++) {
     const charCode = input.charCodeAt(i);
     const isSafe = safeRanges.some(
-      ([start, end]) => charCode >= start && charCode <= end
+      ([start, end]) => charCode >= start && charCode <= end,
     );
     if (!isSafe) {
       return false;
