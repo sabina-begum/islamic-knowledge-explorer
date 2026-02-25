@@ -44,8 +44,8 @@ A comprehensive, modern web application for exploring knowledge through advanced
 ### **Frontend**
 
 - **React 18.2.0** with TypeScript for type-safe development
-- **Vite 7.1.1** for fast development and optimized builds
-- **React Router DOM 6.8.1** for client-side routing
+- **Vite 7.3.1** for fast development and optimized builds
+- **React Router DOM 6.30.3** for client-side routing
 - **Tailwind CSS 3.3.6** for utility-first styling
 
 ### **Data Visualization**
@@ -68,7 +68,7 @@ A comprehensive, modern web application for exploring knowledge through advanced
 
 ### **Backend & Services**
 
-- **Firebase 12.1.0** for authentication, database, and hosting
+- **Firebase 12.9.0** for authentication, database, and hosting
 - **Date-fns 2.30.0** for date manipulation
 - **Lodash 4.17.21** for utility functions
 
