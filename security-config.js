@@ -26,7 +26,7 @@ export const securityConfig = {
 
     production: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com",
+      "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com",
       "worker-src 'self'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
