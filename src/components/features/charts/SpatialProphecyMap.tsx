@@ -33,7 +33,7 @@ export const SpatialProphecyMap: React.FC<SpatialProphecyMapProps> = ({
           item.title.toLowerCase().includes("mecca") ||
           item.title.toLowerCase().includes("medina") ||
           item.title.toLowerCase().includes("yemen") ||
-          item.title.toLowerCase().includes("aden")
+          item.title.toLowerCase().includes("aden"),
       ).length,
       prophecies: allData
         .filter(
@@ -44,7 +44,7 @@ export const SpatialProphecyMap: React.FC<SpatialProphecyMapProps> = ({
             item.title.toLowerCase().includes("mecca") ||
             item.title.toLowerCase().includes("medina") ||
             item.title.toLowerCase().includes("yemen") ||
-            item.title.toLowerCase().includes("aden")
+            item.title.toLowerCase().includes("aden"),
         )
         .map((item) => item.title),
     },
@@ -57,7 +57,7 @@ export const SpatialProphecyMap: React.FC<SpatialProphecyMapProps> = ({
           item.title.toLowerCase().includes("worldwide") ||
           item.title.toLowerCase().includes("environmental") ||
           item.title.toLowerCase().includes("climate") ||
-          item.title.toLowerCase().includes("world")
+          item.title.toLowerCase().includes("world"),
       ).length,
       prophecies: allData
         .filter(
@@ -66,7 +66,7 @@ export const SpatialProphecyMap: React.FC<SpatialProphecyMapProps> = ({
             item.title.toLowerCase().includes("worldwide") ||
             item.title.toLowerCase().includes("environmental") ||
             item.title.toLowerCase().includes("climate") ||
-            item.title.toLowerCase().includes("world")
+            item.title.toLowerCase().includes("world"),
         )
         .map((item) => item.title),
     },
@@ -82,7 +82,7 @@ export const SpatialProphecyMap: React.FC<SpatialProphecyMapProps> = ({
           item.title.toLowerCase().includes("embryo") ||
           item.title.toLowerCase().includes("development") ||
           item.title.toLowerCase().includes("barrier") ||
-          item.title.toLowerCase().includes("water")
+          item.title.toLowerCase().includes("water"),
       ).length,
       prophecies: allData
         .filter(
@@ -94,7 +94,7 @@ export const SpatialProphecyMap: React.FC<SpatialProphecyMapProps> = ({
             item.title.toLowerCase().includes("embryo") ||
             item.title.toLowerCase().includes("development") ||
             item.title.toLowerCase().includes("barrier") ||
-            item.title.toLowerCase().includes("water")
+            item.title.toLowerCase().includes("water"),
         )
         .map((item) => item.title),
     },
@@ -106,7 +106,7 @@ export const SpatialProphecyMap: React.FC<SpatialProphecyMapProps> = ({
           item.title.toLowerCase().includes("music") ||
           item.title.toLowerCase().includes("entertainment") ||
           item.title.toLowerCase().includes("ignorance") ||
-          item.title.toLowerCase().includes("social")
+          item.title.toLowerCase().includes("social"),
       ).length,
       prophecies: allData
         .filter(
@@ -114,7 +114,7 @@ export const SpatialProphecyMap: React.FC<SpatialProphecyMapProps> = ({
             item.title.toLowerCase().includes("music") ||
             item.title.toLowerCase().includes("entertainment") ||
             item.title.toLowerCase().includes("ignorance") ||
-            item.title.toLowerCase().includes("social")
+            item.title.toLowerCase().includes("social"),
         )
         .map((item) => item.title),
     },
@@ -129,7 +129,7 @@ export const SpatialProphecyMap: React.FC<SpatialProphecyMapProps> = ({
           item.title.toLowerCase().includes("olive") ||
           item.title.toLowerCase().includes("natural") ||
           item.title.toLowerCase().includes("food") ||
-          item.title.toLowerCase().includes("nutrition")
+          item.title.toLowerCase().includes("nutrition"),
       ).length,
       prophecies: allData
         .filter(
@@ -140,7 +140,7 @@ export const SpatialProphecyMap: React.FC<SpatialProphecyMapProps> = ({
             item.title.toLowerCase().includes("olive") ||
             item.title.toLowerCase().includes("natural") ||
             item.title.toLowerCase().includes("food") ||
-            item.title.toLowerCase().includes("nutrition")
+            item.title.toLowerCase().includes("nutrition"),
         )
         .map((item) => item.title),
     },
@@ -218,7 +218,7 @@ export const SpatialProphecyMap: React.FC<SpatialProphecyMapProps> = ({
           item.type !== "traditional-treatments" &&
           item.type !== "health" &&
           item.type !== "scientific" &&
-          item.type !== "prophecy"
+          item.type !== "prophecy",
       ).length,
       prophecies: allData
         .filter(
@@ -259,7 +259,7 @@ export const SpatialProphecyMap: React.FC<SpatialProphecyMapProps> = ({
             item.type !== "traditional-treatments" &&
             item.type !== "health" &&
             item.type !== "scientific" &&
-            item.type !== "prophecy"
+            item.type !== "prophecy",
         )
         .map((item) => item.title),
     },
@@ -317,7 +317,7 @@ export const SpatialProphecyMap: React.FC<SpatialProphecyMapProps> = ({
             )}
 
             {/* Hover tooltip */}
-            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 max-w-xs break-words">
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-stone-200 text-black dark:bg-stone-900 dark:text-stone-100 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 max-w-xs break-words">
               <div className="font-semibold">{location.label}</div>
               <div>Data entries: {location.value}</div>
               {location.prophecies.length > 0 && (
