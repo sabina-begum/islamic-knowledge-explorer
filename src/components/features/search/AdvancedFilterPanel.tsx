@@ -348,25 +348,30 @@ export const AdvancedFilterPanel: React.FC<AdvancedFilterPanelProps> = ({
                 {t("search.dataSources")}
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {dataSourceOptions.map((option) => (
-                  <label
-                    key={option.value}
-                    className="flex items-center space-x-2 cursor-pointer p-2 rounded-md hover:bg-white dark:hover:bg-stone-700 transition-colors"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={filters.dataSources.includes(
-                        option.value as "islamic data" | "quran" | "hadith",
-                      )}
-                      onChange={() =>
+                {dataSourceOptions.map((option) => {
+                  const selected = filters.dataSources.includes(
+                    option.value as "islamic data" | "quran" | "hadith",
+                  );
+
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() =>
                         handleMultiSelectToggle("dataSources", option.value)
                       }
-                      className="rounded border-stone-300 text-green-600 focus:ring-green-500"
-                    />
-                    <span className="text-sm text-stone-600 dark:text-stone-400 font-medium"></span>
-                    {option.label}
-                  </label>
-                ))}
+                      aria-pressed={selected}
+                      className={
+                        "w-full px-3 py-2 rounded-lg text-sm font-medium border transition-colors " +
+                        (selected
+                          ? "bg-green-600 text-white border-green-700"
+                          : "bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 border-stone-300 dark:border-stone-600 hover:bg-stone-100 dark:hover:bg-stone-700")
+                      }
+                    >
+                      {option.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
