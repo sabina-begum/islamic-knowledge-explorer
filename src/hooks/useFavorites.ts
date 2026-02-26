@@ -33,8 +33,6 @@ const getItemId = (item: FavoriteItem): string => {
     // HadithEntry: use id so each hadith is unique (number can repeat)
     const id = (item as HadithEntry).id;
     return typeof id === "string" && id.startsWith("hadith-") ? id : `hadith-${id}`;
-  } else if ("number" in item) {
-    return `hadith-${item.number}`;
   }
   return `unknown-${JSON.stringify(item)}`;
 };

@@ -278,7 +278,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
                 currentFilters.yearRange.max < 2024
               );
             const hadithSourceSelected = currentFilters.dataSources.some(
-              (s) => String(s).toLowerCase().trim() === "hadith"
+              (s) => String(s).toLowerCase().trim() === "hadith",
             );
             // Hadith: only chapter counts as "filter applied" for guard (number range uses data min/max and can falsely be true when data has large ids)
             const hadithNoFilter =
@@ -296,8 +296,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
               const hasIslamicTypes = currentFilters.types.length > 0;
               const hasFulfillment =
                 currentFilters.fulfillmentStatus.length > 0;
-              const hasProphecy =
-                currentFilters.prophecyCategories.length > 0;
+              const hasProphecy = currentFilters.prophecyCategories.length > 0;
               const yearRangeNarrowed =
                 currentFilters.yearRange.min > 0 ||
                 currentFilters.yearRange.max < 2024;
@@ -314,8 +313,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
                   islamicResults = islamicResults.filter((result) => {
                     const item = result.data as IslamicData;
                     return (
-                      item.type &&
-                      currentFilters.types.includes(item.type)
+                      item.type && currentFilters.types.includes(item.type)
                     );
                   });
                 }
@@ -388,9 +386,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
                 if (verseRangeNarrowed) {
                   quranResults = quranResults.filter((result) => {
                     const ayah = result.data as QuranAyah;
-                    const verseNumber = parseInt(
-                      ayah.ayah_no_surah.toString(),
-                    );
+                    const verseNumber = parseInt(ayah.ayah_no_surah.toString());
                     return (
                       verseNumber >= currentFilters.quranVerseRange.min &&
                       verseNumber <= currentFilters.quranVerseRange.max
@@ -420,7 +416,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
 
             // Process Hadith data: only include results when at least one filter is selected (default: no results)
             const hadithSelected = currentFilters.dataSources.some(
-              (s) => String(s).toLowerCase().trim() === "hadith"
+              (s) => String(s).toLowerCase().trim() === "hadith",
             );
             if (hadithSelected) {
               // Hadith: require at least one chapter (same idea as Quran requiring surah) so "no filter" = no results
@@ -434,9 +430,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
                   const hadith = result.data as HadithEntry;
                   return (
                     hadith.chapter != null &&
-                    currentFilters.hadithCategories.includes(
-                      hadith.chapter,
-                    )
+                    currentFilters.hadithCategories.includes(hadith.chapter)
                   );
                 });
 
@@ -470,8 +464,8 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
             // Defensive: only keep results whose type is in selected data sources (normalize for casing)
             const sourceSet = new Set(
               currentFilters.dataSources.map((s) =>
-                String(s).toLowerCase().trim()
-              )
+                String(s).toLowerCase().trim(),
+              ),
             );
             results = results.filter((result) =>
               sourceSet.has(result.type.toLowerCase()),
@@ -592,14 +586,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
             }, 150); // Small delay to ensure results are rendered
           }, 100);
         },
-        [
-          processedIslamicData,
-          processedQuranData,
-          processedHadithData,
-          hadithData.length,
-          totalDataCount,
-          filteredDataCount,
-        ],
+        [processedIslamicData, processedQuranData, processedHadithData],
       );
 
       // Handle search query changes - only update state, don't trigger search
@@ -618,7 +605,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
             return next;
           });
         },
-        []
+        [],
       );
 
       // Handle clear filters - only update state, don't trigger search
@@ -703,16 +690,12 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
       const hadithSelectedWithoutFilter = useMemo(() => {
         if (!hasSearched) return false;
         const hadithSelected = filters.dataSources.some(
-          (s) => String(s).toLowerCase().trim() === "hadith"
+          (s) => String(s).toLowerCase().trim() === "hadith",
         );
         if (!hadithSelected) return false;
         // Hadith: only chapter counts as "filter applied" (same as isSearchDisabled)
         return filters.hadithCategories.length === 0;
-      }, [
-        hasSearched,
-        filters.dataSources,
-        filters.hadithCategories.length,
-      ]);
+      }, [hasSearched, filters.dataSources, filters.hadithCategories.length]);
 
       // Disable Confirm Search when no data sources or any selected source has no filter applied
       const isSearchDisabled = useMemo(() => {
@@ -736,7 +719,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
             filters.yearRange.max < 2024
           );
         const hadithSelected = filters.dataSources.some(
-          (s) => String(s).toLowerCase().trim() === "hadith"
+          (s) => String(s).toLowerCase().trim() === "hadith",
         );
         // Hadith: only chapter counts as "filter applied" for button (number range uses data min/max and can falsely enable)
         const hadithNoFilter =
@@ -785,11 +768,7 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
       }, [
         filteredResults.length,
         filteredDataCount,
-        data.length,
-        quranData.length,
-        hadithData.length,
         actualResultsCount,
-        filters,
         totalDataCount,
       ]);
 
