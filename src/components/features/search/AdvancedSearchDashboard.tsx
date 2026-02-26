@@ -806,19 +806,64 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
           />
 
           {/* Confirm Search Button */}
-          <div className="flex justify-center gap-4">
-            <button
-              onClick={() => performSearch(searchQuery)}
-              disabled={isSearching || isSearchDisabled}
-              className="px-8 py-3 bg-green-600 hover:bg-green-700 disabled:bg-stone-400 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2"
-            >
-              {isSearching ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  {t("search.searching")}
-                </>
-              ) : (
-                <>
+          <div className="flex flex-col items-center gap-3">
+            <div className="flex justify-center gap-4 w-full">
+              <button
+                onClick={() => performSearch(searchQuery)}
+                disabled={isSearching || isSearchDisabled}
+                className="px-8 py-3 bg-green-600 hover:bg-green-700 disabled:bg-stone-400 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2"
+              >
+                {isSearching ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    {t("search.searching")}
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                    {t("search.confirmSearch")}
+                  </>
+                )}
+              </button>
+
+              {hasSearched && (
+                <button
+                  onClick={() => {
+                    setHasSearched(false);
+                    setFilteredResults([]);
+                    setSearchQuery("");
+                    setFilters({
+                      types: [],
+                      categories: [],
+                      searchFields: [],
+                      sortBy: "title",
+                      sortOrder: "asc",
+                      fulfillmentStatus: [],
+                      prophecyCategories: [],
+                      yearRange: { min: 0, max: 2024 },
+                      dataSources: [], // Reset to nothing selected
+                      quranSurahs: [],
+                      quranVerseRange: { min: 1, max: 6236 },
+                      quranPlaceOfRevelation: [],
+                      quranSajdahOnly: false,
+                      hadithNumberRange: { min: 1, max: 13143 },
+                      hadithCategories: [],
+                    });
+                  }}
+                  className="px-6 py-3 bg-stone-500 hover:bg-stone-600 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2"
+                >
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -829,55 +874,61 @@ export const AdvancedSearchDashboard: React.FC<AdvancedSearchDashboardProps> =
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                     />
                   </svg>
-                  {t("search.confirmSearch")}
-                </>
+                  {t("search.newSearch")}
+                </button>
               )}
-            </button>
+            </div>
 
-            {hasSearched && (
-              <button
-                onClick={() => {
-                  setHasSearched(false);
-                  setFilteredResults([]);
-                  setSearchQuery("");
-                  setFilters({
-                    types: [],
-                    categories: [],
-                    searchFields: [],
-                    sortBy: "title",
-                    sortOrder: "asc",
-                    fulfillmentStatus: [],
-                    prophecyCategories: [],
-                    yearRange: { min: 0, max: 2024 },
-                    dataSources: [], // Reset to nothing selected
-                    quranSurahs: [],
-                    quranVerseRange: { min: 1, max: 6236 },
-                    quranPlaceOfRevelation: [],
-                    quranSajdahOnly: false,
-                    hadithNumberRange: { min: 1, max: 13143 },
-                    hadithCategories: [],
-                  });
-                }}
-                className="px-6 py-3 bg-stone-500 hover:bg-stone-600 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-                {t("search.newSearch")}
-              </button>
+            {/* Inline validation guidance when search is disabled */}
+            {isSearchDisabled && (
+              <div className="max-w-3xl text-sm text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg px-4 py-3">
+                {filters.dataSources.length === 0 && (
+                  <p className="font-medium">
+                    {/* Plain text for now; can be moved to i18n later */}
+                    Select at least one data source (Featured Islamic Sources,
+                    Quran Verses, or Hadiths) to enable search.
+                  </p>
+                )}
+                {filters.dataSources.includes("quran") &&
+                  !(
+                    filters.quranSurahs.length > 0 ||
+                    filters.quranVerseRange.min !== 1 ||
+                    filters.quranVerseRange.max !== 6236 ||
+                    filters.quranPlaceOfRevelation.length > 0 ||
+                    filters.quranSajdahOnly
+                  ) && (
+                    <p className="mt-1">
+                      To search Quran Verses, choose at least one Surah, verse
+                      range, place of revelation, or turn on Sajdah verses only.
+                    </p>
+                  )}
+                {filters.dataSources.includes("islamic data") &&
+                  !(
+                    filters.types.length > 0 ||
+                    filters.fulfillmentStatus.length > 0 ||
+                    filters.prophecyCategories.length > 0 ||
+                    filters.yearRange.min > 0 ||
+                    filters.yearRange.max < 2024
+                  ) && (
+                    <p className="mt-1">
+                      To search Featured Islamic Sources, choose at least one
+                      prophecy type, fulfillment status, prophecy category, or
+                      narrow the year range.
+                    </p>
+                  )}
+                {filters.dataSources.some(
+                  (s) => String(s).toLowerCase().trim() === "hadith",
+                ) &&
+                  filters.hadithCategories.length === 0 && (
+                    <p className="mt-1">
+                      To search Hadiths, select at least one chapter in the
+                      Hadith filters.
+                    </p>
+                  )}
+              </div>
             )}
           </div>
 
