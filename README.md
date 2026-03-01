@@ -345,7 +345,6 @@ This project is for educational and informational purposes, showcasing Islamic k
 
 For questions, issues, or contributions, please open an issue on GitHub or contact the development team.
 
-- **Email**: begumsabina81193@gmail.com
 - **Website**: https://reflect-and-implement.netlify.app
 - **Documentation**: See the docs folder for detailed guides
 

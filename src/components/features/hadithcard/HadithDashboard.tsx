@@ -82,7 +82,7 @@ export function HadithDashboard({
 
       {/* Statistics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
-        <div className="bg-white dark:bg-stone-800 rounded-xl p-3 sm:p-4 shadow-lg border border-stone-200 dark:border-stone-700">
+        <div className="bg-stone-50 dark:bg-stone-800 rounded-xl p-3 sm:p-4 shadow-lg border border-stone-200 dark:border-stone-700">
           <div className="text-xl sm:text-2xl font-bold text-stone-700 dark:text-purple-400">
             {stats.totalHadiths.toLocaleString()}
           </div>
@@ -90,7 +90,7 @@ export function HadithDashboard({
             Total Hadiths
           </div>
         </div>
-        <div className="bg-white dark:bg-stone-800 rounded-xl p-3 sm:p-4 shadow-lg border border-stone-200 dark:border-stone-700">
+        <div className="bg-stone-50 dark:bg-stone-800 rounded-xl p-3 sm:p-4 shadow-lg border border-stone-200 dark:border-stone-700">
           <div className="text-xl sm:text-2xl font-bold text-blue-700 dark:text-blue-400">
             {stats.totalWords.toLocaleString()}
           </div>
@@ -98,7 +98,7 @@ export function HadithDashboard({
             Total Words
           </div>
         </div>
-        <div className="bg-white dark:bg-stone-800 rounded-xl p-3 sm:p-4 shadow-lg border border-stone-200 dark:border-stone-700">
+        <div className="bg-stone-50 dark:bg-stone-800 rounded-xl p-3 sm:p-4 shadow-lg border border-stone-200 dark:border-stone-700">
           <div className="text-xl sm:text-2xl font-bold text-orange-700 dark:text-orange-400">
             {stats.averageLength}
           </div>
@@ -109,7 +109,7 @@ export function HadithDashboard({
       </div>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-stone-800 rounded-xl p-6 shadow-lg border border-stone-200 dark:border-stone-700">
+      <div className="bg-stone-50 dark:bg-stone-800 rounded-xl p-6 shadow-lg border border-stone-200 dark:border-stone-700">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* Search */}
           <form

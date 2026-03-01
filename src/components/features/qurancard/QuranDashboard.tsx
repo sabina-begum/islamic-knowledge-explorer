@@ -143,10 +143,13 @@ export function QuranDashboard({
       </div>
 
       {/* Filters - layout consistent with Hadith tab */}
-      <div className="bg-white dark:bg-stone-800 rounded-xl p-6 shadow-lg border border-stone-200 dark:border-stone-700">
+      <div className="bg-stone-50 dark:bg-stone-900 rounded-xl p-6 shadow-lg border border-stone-200 dark:border-stone-700">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* Search - same pattern as Hadith: label + input row, touch-friendly button */}
-          <form onSubmit={handleSearch} className="sm:col-span-2 lg:col-span-2 w-full">
+          <form
+            onSubmit={handleSearch}
+            className="sm:col-span-2 lg:col-span-2 w-full"
+          >
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="quran-search"

@@ -11,9 +11,7 @@ interface DataCardProps {
 /** Title-case for display (e.g. "supported by evidence" → "Supported By Evidence", "in-progress" → "In Progress"). */
 function toTitleCase(s: string): string {
   if (!s) return s;
-  return s
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 // Memoized DataCard component for better performance
@@ -28,7 +26,7 @@ export const DataCard: React.FC<DataCardProps> = memo(
     };
 
     return (
-      <div className="bg-white dark:bg-stone-800 rounded-xl shadow-lg border border-stone-200 dark:border-stone-700 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+      <div className="bg-stone-50 dark:bg-stone-800 rounded-xl shadow-lg border border-stone-200 dark:border-stone-700 overflow-hidden hover:shadow-xl transition-shadow duration-300">
         {/* Header with type badge and favorite button */}
         <div className="p-4 border-b border-stone-200 dark:border-stone-700">
           <div className="flex items-center justify-between">
@@ -37,12 +35,12 @@ export const DataCard: React.FC<DataCardProps> = memo(
                 card.type === "prophecy"
                   ? "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200"
                   : card.type === "scientific"
-                  ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200"
-                  : card.type === "health"
-                  ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200"
-                  : card.type === "qadr"
-                  ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-200"
-                  : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200"
+                    : card.type === "health"
+                      ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200"
+                      : card.type === "qadr"
+                        ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-200"
+                        : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
               }`}
             >
               {card.type.charAt(0).toUpperCase() + card.type.slice(1)}
@@ -107,19 +105,19 @@ export const DataCard: React.FC<DataCardProps> = memo(
                         card.status === "Fulfilled Prophecy"
                           ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200"
                           : card.status === "Documented"
-                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200"
-                          : card.status === "supported by evidence"
-                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200"
-                          : card.status === "Future Event"
-                          ? "bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-200"
-                          : card.status === "Ongoing Research"
-                          ? "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200"
-                          : card.status === "In Progress"
-                          ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200"
-                          : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200"
+                            : card.status === "supported by evidence"
+                              ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200"
+                              : card.status === "Future Event"
+                                ? "bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-200"
+                                : card.status === "Ongoing Research"
+                                  ? "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200"
+                                  : card.status === "In Progress"
+                                    ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200"
+                                    : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                       }`}
                     >
-                      {toTitleCase(card.status)}
+                      {toTitleCase(card.status || "")}
                     </span>
                   </div>
                 ) : (
@@ -130,10 +128,10 @@ export const DataCard: React.FC<DataCardProps> = memo(
                         card.fulfillmentStatus === "fulfilled"
                           ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200"
                           : card.fulfillmentStatus === "in-progress"
-                          ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200"
-                          : card.fulfillmentStatus === "pending"
-                          ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200"
-                          : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                            ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200"
+                            : card.fulfillmentStatus === "pending"
+                              ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200"
+                              : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                       }`}
                     >
                       {toTitleCase(card.fulfillmentStatus)}
@@ -250,7 +248,7 @@ export const DataCard: React.FC<DataCardProps> = memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 DataCard.displayName = "DataCard";

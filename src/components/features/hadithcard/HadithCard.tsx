@@ -61,7 +61,7 @@ export function HadithCard({
 
       announceToScreenReader(announcement);
     },
-    [hadith, onFavorite, isFavorite, t, announceToScreenReader]
+    [hadith, onFavorite, isFavorite, t, announceToScreenReader],
   );
 
   // Helper function to check if a field has meaningful content
@@ -107,7 +107,7 @@ export function HadithCard({
 
       announceToScreenReader(announcement);
     },
-    [t, announceToScreenReader]
+    [t, announceToScreenReader],
   );
 
   // Handle keyboard events for expand buttons with full keyboard support
@@ -123,7 +123,7 @@ export function HadithCard({
         handleExpandToggle(sectionId, isExpanded);
       }
     },
-    [handleExpandToggle]
+    [handleExpandToggle],
   );
 
   // Handle skip link activation
@@ -136,7 +136,7 @@ export function HadithCard({
         targetElement.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     },
-    []
+    [],
   );
 
   // Generate unique IDs for ARIA relationships
@@ -158,7 +158,7 @@ export function HadithCard({
       const { words, characters } = getContentLength(content);
       return `${type}, ${words} words, ${characters} characters`;
     },
-    [getContentLength]
+    [getContentLength],
   );
 
   // Check if content is actually truncated (needs expansion)
@@ -232,7 +232,7 @@ export function HadithCard({
 
   return (
     <article
-      className="w-full h-full bg-white dark:bg-stone-800 rounded-xl p-4 sm:p-6 shadow-lg border border-stone-200 dark:border-stone-700 hover:shadow-xl transition-shadow flex flex-col relative z-10"
+      className="w-full h-full bg-stone-50 dark:bg-stone-800 rounded-xl p-4 sm:p-6 shadow-lg border border-stone-200 dark:border-stone-700 hover:shadow-xl transition-shadow flex flex-col relative z-10"
       id={cardId}
       aria-labelledby={`${cardId}-title`}
       aria-describedby={`${cardId}-description`}
@@ -401,7 +401,7 @@ export function HadithCard({
                 {hadith.arabic
                   ? getAccessibilityDescription(
                       hadith.arabic,
-                      t("hadith.arabicText")
+                      t("hadith.arabicText"),
                     )
                   : ""}
               </div>
@@ -417,14 +417,14 @@ export function HadithCard({
                         e.stopPropagation();
                         handleExpandToggle(
                           arabicSectionId,
-                          expandedSections[arabicSectionId]
+                          expandedSections[arabicSectionId],
                         );
                       }}
                       onKeyDown={(e) =>
                         handleExpandKeyDown(
                           e,
                           arabicSectionId,
-                          expandedSections[arabicSectionId]
+                          expandedSections[arabicSectionId],
                         )
                       }
                       className="text-xs font-medium text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100 transition-colors cursor-pointer bg-white dark:bg-stone-800 px-2 py-1 rounded border border-stone-200 dark:border-stone-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 focus:ring-offset-white dark:focus:ring-offset-stone-800 relative z-20"
@@ -482,7 +482,7 @@ export function HadithCard({
               <div id={`${textSectionId}-description`} className="sr-only">
                 {getAccessibilityDescription(
                   hadith.text,
-                  t("hadith.hadithText")
+                  t("hadith.hadithText"),
                 )}
               </div>
 
@@ -497,14 +497,14 @@ export function HadithCard({
                         e.stopPropagation();
                         handleExpandToggle(
                           textSectionId,
-                          expandedSections[textSectionId]
+                          expandedSections[textSectionId],
                         );
                       }}
                       onKeyDown={(e) =>
                         handleExpandKeyDown(
                           e,
                           textSectionId,
-                          expandedSections[textSectionId]
+                          expandedSections[textSectionId],
                         )
                       }
                       className="text-xs font-medium text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100 transition-colors cursor-pointer bg-white dark:bg-stone-800 px-2 py-1 rounded border border-stone-200 dark:border-stone-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 focus:ring-offset-white dark:focus:ring-offset-stone-800 relative z-20"
@@ -565,7 +565,7 @@ export function HadithCard({
                 {hadith.translation
                   ? getAccessibilityDescription(
                       hadith.translation,
-                      t("hadith.englishTranslation")
+                      t("hadith.englishTranslation"),
                     )
                   : ""}
               </div>
@@ -581,14 +581,14 @@ export function HadithCard({
                         e.stopPropagation();
                         handleExpandToggle(
                           translationSectionId,
-                          expandedSections[translationSectionId]
+                          expandedSections[translationSectionId],
                         );
                       }}
                       onKeyDown={(e) =>
                         handleExpandKeyDown(
                           e,
                           translationSectionId,
-                          expandedSections[translationSectionId]
+                          expandedSections[translationSectionId],
                         )
                       }
                       className="text-xs font-medium text-yellow-700 dark:text-yellow-300 hover:text-yellow-800 dark:hover:text-yellow-200 transition-colors cursor-pointer bg-yellow-100 dark:bg-yellow-900/40 px-2 py-1 rounded border border-yellow-200 dark:border-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-1 focus:ring-offset-yellow-50 dark:focus:ring-offset-yellow-900/20 relative z-20"
@@ -631,7 +631,7 @@ export function HadithCard({
             {contentFields.slice(1).map(([fieldKey, fieldValue], idx) => {
               const isArabicText =
                 /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(
-                  fieldValue
+                  fieldValue,
                 );
               const fieldSectionId = `${cardId}-field-${idx}`;
 
@@ -688,14 +688,14 @@ export function HadithCard({
                               e.stopPropagation();
                               handleExpandToggle(
                                 fieldSectionId,
-                                expandedSections[fieldSectionId]
+                                expandedSections[fieldSectionId],
                               );
                             }}
                             onKeyDown={(e) =>
                               handleExpandKeyDown(
                                 e,
                                 fieldSectionId,
-                                expandedSections[fieldSectionId]
+                                expandedSections[fieldSectionId],
                               )
                             }
                             className="text-xs font-medium text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100 transition-colors cursor-pointer bg-white dark:bg-stone-800 px-2 py-1 rounded border border-stone-200 dark:border-stone-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 focus:ring-offset-white dark:focus:ring-offset-stone-800 relative z-20"
@@ -704,10 +704,10 @@ export function HadithCard({
                             aria-label={
                               expandedSections[fieldSectionId]
                                 ? `${t(
-                                    "accessibility.collapseField"
+                                    "accessibility.collapseField",
                                   )} ${fieldKey}`
                                 : `${t(
-                                    "accessibility.expandField"
+                                    "accessibility.expandField",
                                   )} ${fieldKey}`
                             }
                           >
@@ -716,8 +716,8 @@ export function HadithCard({
                                 ? "عرض أقل"
                                 : "Show Less"
                               : isArabicText
-                              ? "عرض المزيد"
-                              : "Show More"}
+                                ? "عرض المزيد"
+                                : "Show More"}
                           </button>
                         </div>
                       )}

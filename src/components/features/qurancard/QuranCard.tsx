@@ -15,7 +15,7 @@ export function QuranCard({ ayah, onFavorite, isFavorite }: QuranCardProps) {
   };
 
   return (
-    <div className="w-full h-full bg-white dark:bg-stone-800 rounded-xl p-4 sm:p-6 shadow-lg border border-stone-200 dark:border-stone-700 hover:shadow-xl transition-shadow flex flex-col">
+    <div className="w-full h-full bg-stone-50 dark:bg-stone-800 rounded-xl p-4 sm:p-6 shadow-lg border border-stone-200 dark:border-stone-700 hover:shadow-xl transition-shadow flex flex-col">
       {/* Header with Surah and Ayah info - favorite top-right on all screens (consistent with DataCard) */}
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 flex-wrap">
