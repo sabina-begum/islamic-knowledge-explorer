@@ -3,7 +3,7 @@
   "@type": "WebApplication",
   "name": "Reflect & Implement",
   "description": "Comprehensive knowledge platform for reflection and implementation with advanced search and visualization capabilities",
-  "url": "https://reflectandimplement.com",
+  "url": "https://reflect-and-implement.netlify.app",
   "applicationCategory": "EducationalApplication",
   "operatingSystem": "Any",
   "offers": {
