@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-This report documents the comprehensive WCAG 2.1 Level AA compliance audit conducted on the Islamic Dataset Interface app. All critical accessibility issues have been identified and resolved.
+This report documents accessibility work completed for WCAG 2.1 Level AA alignment. The latest implementation updates are tracked, but final conformance should only be claimed after completing the pending evidence checklist in `docs/ACCESSIBILITY_AUDIT_2026.md`.
 
 ## Issues Found and Fixed
 
@@ -151,27 +151,27 @@ focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2
 
 ## WCAG 2.1 Level AA Compliance Status
 
-### ✅ Perceivable
+### ⚠️ Perceivable (Implementation Mostly Complete, Evidence Pending)
 
 - **1.1 Text Alternatives**: All images have alt text
 - **1.2 Time-based Media**: No time-based media issues
 - **1.3 Adaptable**: Responsive design implemented
 - **1.4 Distinguishable**: Color contrast meets 4.5:1 ratio
 
-### ✅ Operable
+### ⚠️ Operable (Implementation Mostly Complete, Evidence Pending)
 
 - **2.1 Keyboard Accessible**: Full keyboard navigation
 - **2.2 Enough Time**: No time limits
 - **2.3 Seizures**: No flashing content
 - **2.4 Navigable**: Multiple navigation methods
 
-### ✅ Understandable
+### ⚠️ Understandable (Implementation Mostly Complete, Evidence Pending)
 
 - **3.1 Readable**: Clear language and structure
 - **3.2 Predictable**: Consistent navigation
 - **3.3 Input Assistance**: Proper form validation
 
-### ✅ Robust
+### ⚠️ Robust (Implementation Mostly Complete, Evidence Pending)
 
 - **4.1 Compatible**: Valid HTML and ARIA support
 
@@ -179,17 +179,13 @@ focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2
 
 ### Automated Testing
 
-- ✅ Color contrast validation passed
-- ✅ ARIA attribute validation passed
-- ✅ HTML semantic validation passed
-- ✅ Keyboard navigation testing passed
+- ⏳ Evidence refresh pending (run and store 2026 results)
+- Recommended tools: axe-core, Lighthouse, WAVE
 
 ### Manual Testing
 
-- ✅ Screen reader testing (NVDA, JAWS, VoiceOver)
-- ✅ Keyboard-only navigation
-- ✅ High contrast mode testing
-- ✅ Zoom testing (200% zoom level)
+- ⏳ Evidence refresh pending for 2026 cycle
+- Required: keyboard-only flow testing, NVDA/VoiceOver smoke test, 200% zoom verification, contrast checks
 
 ## Recommendations for Ongoing Maintenance
 
@@ -214,9 +210,9 @@ focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2
 
 ## Conclusion
 
-The Islamic Dataset Interface app now meets WCAG 2.1 Level AA compliance standards. All critical accessibility issues have been resolved, and the app provides an inclusive experience for users with disabilities.
+The Islamic Dataset Interface app has substantial accessibility improvements in place, including skip-link wiring, improved focus visibility, and better dialog/label semantics. Complete legal-safe conformance claims should wait until the evidence checklist in `docs/ACCESSIBILITY_AUDIT_2026.md` is fully completed.
 
-**Compliance Status: ✅ FULLY COMPLIANT**
+**Compliance Status: ⚠️ In Progress (Evidence Pending)**
 
-**Last Updated:** December 2024
-**Next Review:** January 2025
+**Last Updated:** March 2026
+**Next Review:** After evidence checklist completion
