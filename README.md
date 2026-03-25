@@ -72,6 +72,17 @@ A comprehensive, modern web application for exploring knowledge through advanced
 - **Date-fns 2.30.0** for date manipulation
 - **Lodash 4.17.21** for utility functions
 
+## 📚 Documentation
+
+- `docs/PRODUCTION_DOCS_PLAN.md` - production readiness scope and gap tracking
+- `docs/RELEASE_CHECKLIST.md` - pre-release quality and security gates
+- `docs/DEPLOYMENT_GUIDE.md` - deployment process (Netlify-focused)
+- `docs/POST_DEPLOY_VERIFICATION.md` - production verification checklist
+- `docs/RUNBOOK.md` - production incident triage steps
+- `docs/ENVIRONMENT_VARIABLES.md` - runtime/build variables reference
+- `docs/SECRETS_AND_SAFE_DEFAULTS.md` - secret handling and safe defaults
+- `docs/PLATFORM_DECISION_CHECKLIST.md` - Firebase vs Supabase reassessment checklist
+
 ## 📦 Installation & Setup
 
 ### **Prerequisites**
@@ -243,7 +254,8 @@ VITE_APP_NAME="Reflect & Implement"
 VITE_APP_VERSION="1.0.0"
 
 # Security Configuration
-VITE_CSP_REPORT_URI=https://your-domain.com/csp-report
+# Example only (not currently wired by runtime code in this repo).
+VITE_CSP_REPORT_URI=https://<YOUR_DOMAIN>/csp-report
 VITE_SECURITY_HEADERS_ENABLED=true
 ```
 

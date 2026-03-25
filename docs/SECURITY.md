@@ -248,7 +248,8 @@ function logSecurityEvent(event: string, details: any) {
 # Security configuration
 NODE_ENV=production
 HTTPS_ENABLED=true
-CSP_REPORT_URI=https://your-domain.com/csp-report
+# Example only (not currently wired by runtime code in this repo).
+CSP_REPORT_URI=https://<YOUR_DOMAIN>/csp-report
 SECURITY_HEADERS_ENABLED=true
 RATE_LIMIT_ENABLED=true
 INPUT_VALIDATION_STRICT=true
