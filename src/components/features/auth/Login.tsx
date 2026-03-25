@@ -40,8 +40,10 @@ const Login: React.FC<LoginProps> = ({ onClose, onSwitchToSignup }) => {
           Sign in to your account
         </h2>
         <button
+          type="button"
           onClick={onClose}
           className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200"
+          aria-label="Close sign in dialog"
         >
           <svg
             className="w-6 h-6"

@@ -298,7 +298,7 @@ export default function HomePage({
                               searchTerm: e.target.value,
                             })
                           }
-                          className="flex-1 min-w-0 px-3 py-2 rounded-l-xl sm:rounded-r-none border-0 bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:ring-0 focus:outline-none"
+                          className="flex-1 min-w-0 px-3 py-2 rounded-l-xl sm:rounded-r-none border-0 bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-green-500"
                         />
                         <button
                           type="submit"

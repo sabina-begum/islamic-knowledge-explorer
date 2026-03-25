@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../../hooks/useContext";
 
 interface SignupProps {
@@ -14,6 +14,9 @@ interface TermsModalProps {
 
 const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, type }) => {
   if (!isOpen) return null;
+
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const title = type === "terms" ? "Terms of Use" : "Privacy Policy";
   const content =
@@ -76,16 +79,72 @@ const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, type }) => {
       </div>
     );
 
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (event.key !== "Tab" || !dialogRef.current) return;
+
+      const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [onClose]);
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-stone-800 rounded-xl shadow-xl max-w-md w-full mx-4 p-6">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="terms-modal-title"
+        className="bg-white dark:bg-stone-800 rounded-xl shadow-xl max-w-md w-full mx-4 p-6"
+      >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-stone-800 dark:text-stone-200">
+          <h2
+            id="terms-modal-title"
+            className="text-xl font-bold text-stone-800 dark:text-stone-200"
+          >
             {title}
           </h2>
           <button
+            ref={closeButtonRef}
+            type="button"
             onClick={onClose}
             className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200"
+            aria-label={`Close ${title}`}
           >
             <svg
               className="w-6 h-6"
@@ -105,6 +164,7 @@ const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, type }) => {
         {content}
         <div className="mt-6 flex justify-end">
           <button
+            type="button"
             onClick={onClose}
             className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
           >
@@ -192,8 +252,10 @@ const Signup: React.FC<SignupProps> = ({ onClose, onSwitchToLogin }) => {
             Create your account
           </h2>
           <button
+            type="button"
             onClick={onClose}
             className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200"
+            aria-label="Close create account dialog"
           >
             <svg
               className="w-6 h-6"
@@ -349,6 +411,7 @@ const Signup: React.FC<SignupProps> = ({ onClose, onSwitchToLogin }) => {
           <p className="text-sm text-stone-600 dark:text-stone-400">
             Already have an account?{" "}
             <button
+              type="button"
               onClick={onSwitchToLogin}
               className="font-medium text-green-600 hover:text-green-500 dark:text-green-400 dark:hover:text-green-300"
             >

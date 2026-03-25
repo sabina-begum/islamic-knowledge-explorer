@@ -7,6 +7,7 @@ import { useAppReady, AppReadyGate } from "./contexts/AppReadyContext";
 import Navbar from "./components/layout/Navbar";
 import Sidebar from "./components/layout/Sidebar";
 import Footer from "./components/layout/Footer";
+import { SkipLink } from "./components/common/SkipLink";
 
 // Import performance optimization utilities
 import { monitorCSSPerformance } from "./utils/cssLoader";
@@ -177,9 +178,12 @@ function App() {
             className="min-h-screen bg-stone-50 dark:bg-stone-900 flex flex-col main-container"
             style={{ visibility: appReady ? "visible" : "hidden" }}
           >
+            <SkipLink targetId="main-content">Skip to main content</SkipLink>
             <Navbar onMenuToggle={toggleSidebar} />
             <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
             <main
+              id="main-content"
+              tabIndex={-1}
               className={`flex-1 container mx-auto max-w-7xl px-4 py-8 content-container transition-all duration-300 ${
                 isSidebarOpen ? "md:mr-80" : ""
               }`}

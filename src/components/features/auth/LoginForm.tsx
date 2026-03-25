@@ -119,6 +119,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                aria-label={
+                  showPassword ? "Hide password input" : "Show password input"
+                }
+                aria-pressed={showPassword}
               >
                 {showPassword ? (
                   <svg

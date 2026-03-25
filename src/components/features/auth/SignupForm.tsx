@@ -188,6 +188,10 @@ export const SignupForm: React.FC<SignupFormProps> = ({
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                aria-label={
+                  showPassword ? "Hide password input" : "Show password input"
+                }
+                aria-pressed={showPassword}
               >
                 {showPassword ? (
                   <svg
@@ -326,6 +330,12 @@ export const SignupForm: React.FC<SignupFormProps> = ({
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                aria-label={
+                  showConfirmPassword
+                    ? "Hide confirm password input"
+                    : "Show confirm password input"
+                }
+                aria-pressed={showConfirmPassword}
               >
                 {showConfirmPassword ? (
                   <svg
